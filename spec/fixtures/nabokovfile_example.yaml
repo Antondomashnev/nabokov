@@ -1,0 +1,4 @@
+git_repo: 'https://github.com/nabokov/nabokov'
+localizations:
+  :en: 'spec/fixtures/en.strings'
+  :de: 'spec/fixtures/de.strings'
