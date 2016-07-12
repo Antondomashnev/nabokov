@@ -3,24 +3,25 @@ require 'git'
 module Nabokov
   class GitRepo
 
-    attr_accessor :remote_url
+    attr_accessor :remote_url, :local_path
 
     def initialize(remote_url)
       self.remote_url = remote_url
+      self.local_path = local_parent_folder_path + local_folder_name
     end
 
     def clone
-      @git_repo ||= Git.clone(self.remote_url, local_name, :path => local_path)
+      @git_repo ||= Git.clone(self.remote_url, local_folder_name, :path => local_parent_folder_path)
     end
 
     private
 
-    def local_path
-      @local_path ||= "/tmp/checkout/"
+    def local_parent_folder_path
+      @local_parent_folder_path ||= "/tmp/checkout/"
     end
 
-    def local_name
-      @local_repo_name ||= "nabokov_#{SecureRandom.uuid}"
+    def local_folder_name
+      @local_folder_name ||= "nabokov_#{SecureRandom.uuid}"
     end
 
   end

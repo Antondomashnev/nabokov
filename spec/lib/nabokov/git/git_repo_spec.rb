@@ -29,5 +29,21 @@ describe Nabokov::GitRepo do
       @git_repo.clone
     end
 
+    it "returns tocal path under checkout directory in temp with the folder name starts with nabokov prefix" do
+      expect(@git_repo.local_path).to start_with("/tmp/checkout/nabokov_")
+    end
   end
+
+  describe "empty strings repo" do
+    before do
+      allow(Git).to receive(:clone).with(anything, anything, anything).and_return(Git.init("spec/empty_strings_repo"))
+      @git_repo = Nabokov::GitRepo.new('https://github.com/nabokov/nabokov.git')
+      @git_repo.clone
+    end
+
+
+
+
+  end
+
 end
