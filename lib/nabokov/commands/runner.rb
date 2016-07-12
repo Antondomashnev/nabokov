@@ -7,7 +7,7 @@ module Nabokov
 
     def initialize(argv)
       nabokovfile = argv.option('nabokovfile')
-      @nabokovfile_path = nabokovfile if File.exist? nabokovfile
+      @nabokovfile_path = nabokovfile if File.exist?(nabokovfile)
       super
     end
 
@@ -25,7 +25,7 @@ module Nabokov
     end
 
     def run
-      
+
     end
 
   end
