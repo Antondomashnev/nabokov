@@ -23,6 +23,14 @@ describe Nabokov::FileManager do
       new_file_name = ""
       expect { Nabokov::FileManager.copy_and_rename(from_path, to_directory, new_file_name) }.to raise_error("New name of the file could not be empty")
     end
+
+    it "raises an exception if the new file name contains the '.' because it messes up with the extension delimeter" do
+      from_path = "spec/fixtures/de.strings"
+      to_directory = "spec/fixtures/test_copy_folder"
+      new_file_name = "fr.de"
+      expect { Nabokov::FileManager.copy_and_rename(from_path, to_directory, new_file_name) }.to raise_error("New name of the file 'fr.de' contains invalid character '.'")
+    end
+
   end
 
 end
