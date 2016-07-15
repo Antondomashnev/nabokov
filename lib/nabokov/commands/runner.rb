@@ -1,4 +1,5 @@
 require 'nabokov/core/nabokovfile'
+require 'nabokov/core/file_manager'
 require 'nabokov/git/git_repo'
 require 'nabokov/version'
 require 'claide'
@@ -38,8 +39,9 @@ module Nabokov
       nabokovfile = Nabokovfile.new(@nabokovfile_path)
       ui.puts "Hooray, your Nabokovfile is valid".green
       git_repo = GitRepo.new(nabokovfile.localizations_repo_url)
-      ui.puts "Cloning the localization repo from #{nabokovfile.localizations_repo_url}"
+      ui.puts "Cloning the localization repo from #{nabokovfile.localizations_repo_url} into #{git_repo.local_path}"
       git_repo.clone
+      FileManager.remove(git_repo.local_path)
     end
 
     private

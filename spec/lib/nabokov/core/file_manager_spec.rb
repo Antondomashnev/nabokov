@@ -5,7 +5,7 @@ describe Nabokov::FileManager do
   context "copy and rename" do
 
     after(:example) do
-      FileUtils.rm_rf Dir.glob("spec/fixtures/test_copy_folder/*")
+      FileUtils.rm_rf(Dir.glob("spec/fixtures/test_copy_folder/*"))
     end
 
     it "raises an exception if there is no file at from_path" do
@@ -64,13 +64,13 @@ describe Nabokov::FileManager do
     it "removes the directory at the given path" do
       FileUtils.mkdir_p('spec/fixtures/test_copy_folder/folder')
       Nabokov::FileManager.remove("spec/fixtures/test_copy_folder/folder")
-      expect(Dir.exist?("spec/fixtures/test_copy_folder/folder")).to be_truthy
+      expect(Dir.exist?("spec/fixtures/test_copy_folder/folder")).to be_falsy
     end
 
     it "removes the file at the given path" do
       FileUtils.mkdir_p('spec/fixtures/test_copy_folder/file.rb')
       Nabokov::FileManager.remove("spec/fixtures/test_copy_folder/file.rb")
-      expect(File.exist?("spec/fixtures/test_copy_folder/file.rb")).to be_truthy
+      expect(File.exist?("spec/fixtures/test_copy_folder/file.rb")).to be_falsy
     end
 
   end

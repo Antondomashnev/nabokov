@@ -20,6 +20,7 @@ module Nabokov
 
     def self.remove(path)
       raise "Can not file neither file nor directory at '#{path}'" unless (File.exist?(path) or Dir.exist?(path))
+      FileUtils.rm_rf(path)
     end
 
   end
