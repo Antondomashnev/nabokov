@@ -2,7 +2,6 @@ require 'YAML'
 require 'uri'
 require 'nabokov/core/nabokovfile_keys'
 require 'nabokov/core/nabokovfile_content_validator'
-require 'cork'
 
 module Nabokov
   class Nabokovfile
@@ -12,14 +11,9 @@ module Nabokov
     # @return hash with key as a localization code (e.x en_US)
     #         and value as a path to localization strings file
     attr_accessor :localization_file_paths
-    # @return instanse of 'cork_board' UI
-    attr_accessor :ui
 
-    def initialize(path, cork_board)
+    def initialize(path)
       raise "Couldn't find nabokov file at '#{path}'" unless File.exist?(path)
-
-      @ui = cork_board
-
       nabokovfile = File.read(path)
       yaml_data = read_data_from_yaml_file(nabokovfile, path)
       validate_content(yaml_data)
@@ -37,10 +31,8 @@ module Nabokov
     end
 
     def validate_content(content_hash)
-      ui.puts "Validating the nabokovfile content"
       validator = NabokovfileContentValidator.new(content_hash)
       validator.validate
-      ui.puts "Ye, your nabokovfile is valid".green
     end
 
     def read_content(content_hash)
