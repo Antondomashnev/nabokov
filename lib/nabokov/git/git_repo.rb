@@ -1,4 +1,5 @@
 require 'git'
+require 'securerandom'
 
 module Nabokov
   class GitRepo

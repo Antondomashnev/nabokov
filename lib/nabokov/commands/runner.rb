@@ -1,4 +1,8 @@
 require 'nabokov/core/nabokovfile'
+require 'nabokov/git/git_repo'
+require 'nabokov/version'
+require 'claide'
+require 'cork'
 
 module Nabokov
   class Runner < CLAide::Command
@@ -9,6 +13,8 @@ module Nabokov
 
     def initialize(argv)
       nabokovfile = argv.option('nabokovfile')
+      raise "nabokovfile is a required parameter and could not be nil" if nabokovfile.nil?
+
       @nabokovfile_path = nabokovfile if File.exist?(nabokovfile)
       @cork = Cork::Board.new(silent: argv.option('silent', false),
                               verbose: argv.option('verbose', false))
@@ -29,12 +35,17 @@ module Nabokov
     end
 
     def run
-      ui.puts "Running nabokov...".green
-      nabokovfile = Nabokovfile.new(@nabokovfile_path, @cork)
-      ui.puts "Ye, your nabokovfile is valid".green
+      nabokovfile = Nabokovfile.new(@nabokovfile_path)
+      ui.puts "Hooray, your Nabokovfile is valid".green
       git_repo = GitRepo.new(nabokovfile.localizations_repo_url)
       ui.puts "Cloning the localization repo from #{nabokovfile.localizations_repo_url}"
       git_repo.clone
+    end
+
+    private
+
+    def ui
+      @cork
     end
 
   end
