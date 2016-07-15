@@ -1,3 +1,5 @@
+require 'nabokov/core/nabokovfile'
+
 module Nabokov
   class Runner < CLAide::Command
 
@@ -25,7 +27,9 @@ module Nabokov
     end
 
     def run
-
+      nabokovfile = Nabokovfile.new(@nabokovfile_path)
+      git_repo = GitRepo.new(nabokovfile.localizations_repo_url)
+      git_repo.clone
     end
 
   end
