@@ -11,7 +11,7 @@ describe Nabokov::Nabokovfile do
 
   it "assigns the localization_git_repo value from valid nabokovfile" do
     nabokovfile = Nabokov::Nabokovfile.new('spec/fixtures/nabokovfile_example.yaml')
-    expect(nabokovfile.localizations_repo_url).to eql("https://github.com/nabokov/nabokov")
+    expect(nabokovfile.localizations_repo_url).to eql("https://github.com/Antondomashnev/nabokov_example.git")
   end
 
   it "assigns the localization_file_paths value from valid nabokovfile" do

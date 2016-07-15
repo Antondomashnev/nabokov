@@ -55,4 +55,24 @@ describe Nabokov::FileManager do
 
   end
 
+  context "remove" do
+
+    it "raises an error if the given path is neither directory nor file" do
+      expect { Nabokov::FileManager.remove("spec/fixtures/not_existed_file.rb") }.to raise_error("Can not file neither file nor directory at 'spec/fixtures/not_existed_file.rb'")
+    end
+
+    it "removes the directory at the given path" do
+      FileUtils.mkdir_p('spec/fixtures/test_copy_folder/folder')
+      Nabokov::FileManager.remove("spec/fixtures/test_copy_folder/folder")
+      expect(Dir.exist?("spec/fixtures/test_copy_folder/folder")).to be_truthy
+    end
+
+    it "removes the file at the given path" do
+      FileUtils.mkdir_p('spec/fixtures/test_copy_folder/file.rb')
+      Nabokov::FileManager.remove("spec/fixtures/test_copy_folder/file.rb")
+      expect(File.exist?("spec/fixtures/test_copy_folder/file.rb")).to be_truthy
+    end
+
+  end
+
 end

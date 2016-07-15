@@ -18,5 +18,9 @@ module Nabokov
       new_file_path
     end
 
+    def self.remove(path)
+      raise "Can not file neither file nor directory at '#{path}'" unless (File.exist?(path) or Dir.exist?(path))
+    end
+
   end
 end
