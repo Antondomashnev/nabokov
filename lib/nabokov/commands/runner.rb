@@ -38,9 +38,12 @@ module Nabokov
     def run
       nabokovfile = Nabokovfile.new(@nabokovfile_path)
       ui.puts "Hooray, your Nabokovfile is valid".green
+
       git_repo = GitRepo.new(nabokovfile.localizations_repo_url)
       ui.puts "Cloning the localization repo from #{nabokovfile.localizations_repo_url} into #{git_repo.local_path}"
       git_repo.clone
+
+      ui.puts "Cleanup all temporary files, we don't wanna waste space on your hard drive=)"
       FileManager.remove(git_repo.local_path)
     end
 

@@ -4,18 +4,18 @@ require 'git'
 describe Nabokov::GitRepo do
   describe "initialization" do
     it "stores remote url after initialization" do
-      git_repo = Nabokov::GitRepo.new('https://github.com/nabokov/nabokov.git')
-      expect(git_repo.remote_url).to eql("https://github.com/nabokov/nabokov.git")
+      git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git')
+      expect(git_repo.remote_url).to eql("https://github.com/Antondomashnev/nabokov_example.git")
     end
   end
 
   describe "clone" do
     before do
-      @git_repo = Nabokov::GitRepo.new('https://github.com/nabokov/nabokov.git')
+      @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git')
     end
 
     it "clones the repo from the initialization remote url" do
-      allow(Git).to receive(:clone).with("https://github.com/nabokov/nabokov.git", anything, anything)
+      allow(Git).to receive(:clone).with("https://github.com/Antondomashnev/nabokov_example.git", anything, anything)
       @git_repo.clone
     end
 
@@ -34,15 +34,19 @@ describe Nabokov::GitRepo do
     end
   end
 
-  describe "empty strings repo" do
+  describe "add" do
+
     before do
-      allow(Git).to receive(:clone).with(anything, anything, anything).and_return(Git.init("spec/empty_strings_repo"))
-      @git_repo = Nabokov::GitRepo.new('https://github.com/nabokov/nabokov.git')
-      @git_repo.clone
+      @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git')
     end
 
+    it "raises an error if there is not file to add at the given path" do
+      expect { @git_repo.add("spec/fixtures/qq.strings") }.to raise_error("Could not find any file to add at path 'spec/fixtures/qq.strings'")
+    end
 
-
+    it "raises an error if the repo has not beed cloned before" do
+      expect { @git_repo.add("spec/fixtures/de.strings") }.to raise_error("'git' is not cloned yet, please call 'clone' before adding new files to the index")
+    end
 
   end
 

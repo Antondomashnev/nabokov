@@ -15,6 +15,11 @@ module Nabokov
       @git_repo ||= Git.clone(self.remote_url, local_folder_name, :path => local_parent_folder_path)
     end
 
+    def add(file_path)
+      raise "Could not find any file to add at path '#{file_path}'" unless File.exist?(file_path)
+      raise "'git' is not cloned yet, please call 'clone' before adding new files to the index" if @git_repo.nil?
+    end
+
     private
 
     def local_parent_folder_path
