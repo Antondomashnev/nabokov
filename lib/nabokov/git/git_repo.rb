@@ -6,7 +6,8 @@ module Nabokov
 
     attr_accessor :remote_url, :local_path
 
-    def initialize(remote_url)
+    def initialize(remote_url, git_repo = nil)
+      @git_repo = git_repo
       self.remote_url = remote_url
       self.local_path = local_parent_folder_path + local_folder_name
     end
