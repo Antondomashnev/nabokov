@@ -63,11 +63,46 @@ describe Nabokov::GitRepo do
 
   describe "commit" do
 
+    context "validation" do
+
+      before do
+        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git')
+      end
+
+      it "raises an error if the repo has not beed cloned before" do
+        expect { @git_repo.commit }.to raise_error("'git' is not cloned yet, please call 'clone' before commiting new files")
+      end
+
+    end
+
     it "makes a commit with correct message" do
       underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
       expect(underlying_git_repo).to receive(:commit).with("Automatic commit by nabokov")
       @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', underlying_git_repo)
       @git_repo.commit
+    end
+
+  end
+
+  describe "push" do
+
+    context "validation" do
+
+      before do
+        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git')
+      end
+
+      it "raises an error if the repo has not beed cloned before" do
+        expect { @git_repo.push }.to raise_error("'git' is not cloned yet, please call 'clone' before pushing any changes to remote")
+      end
+
+    end
+
+    it "makes a push to the remote" do
+      underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
+      expect(underlying_git_repo).to receive(:push)
+      @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', underlying_git_repo)
+      @git_repo.push
     end
 
   end

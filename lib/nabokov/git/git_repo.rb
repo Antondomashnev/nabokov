@@ -23,8 +23,16 @@ module Nabokov
     end
 
     def commit(message = nil)
+      raise "'git' is not cloned yet, please call 'clone' before commiting new files" if @git_repo.nil?
+
       message ||= "Automatic commit by nabokov"
       @git_repo.commit(message)
+    end
+
+    def push
+      raise "'git' is not cloned yet, please call 'clone' before pushing any changes to remote" if @git_repo.nil?
+
+      @git_repo.push
     end
 
     private
