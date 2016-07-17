@@ -43,6 +43,14 @@ module Nabokov
       ui.puts "Cloning the localization repo from #{nabokovfile.localizations_repo_url} into #{git_repo.local_path}"
       git_repo.clone
 
+      nabokovfile.localization_file_paths.each do |localization_file_name, localization_file_path|
+        new_file_path = FileManager.copy_and_rename(localization_file_path, git_repo.local_path, localization_file_name.to_s)
+        git_repo.add(new_file_path)
+      end
+
+      git_repo.commit
+      git_repo.push
+
       ui.puts "Cleanup all temporary files, we don't wanna waste space on your hard drive=)"
       FileManager.remove(git_repo.local_path)
     end
