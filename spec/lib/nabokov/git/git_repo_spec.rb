@@ -61,4 +61,15 @@ describe Nabokov::GitRepo do
 
   end
 
+  describe "commit" do
+
+    it "makes a commit with correct message" do
+      underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
+      expect(underlying_git_repo).to receive(:commit).with("Automatic commit by nabokov")
+      @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', underlying_git_repo)
+      @git_repo.commit
+    end
+
+  end
+
 end
