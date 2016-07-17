@@ -36,16 +36,27 @@ describe Nabokov::GitRepo do
 
   describe "add" do
 
-    before do
-      @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git')
+    context "validation" do
+
+      before do
+        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git')
+      end
+
+      it "raises an error if there is not file to add at the given path" do
+        expect { @git_repo.add("spec/fixtures/qq.strings") }.to raise_error("Could not find any file to add at path 'spec/fixtures/qq.strings'")
+      end
+
+      it "raises an error if the repo has not beed cloned before" do
+        expect { @git_repo.add("spec/fixtures/de.strings") }.to raise_error("'git' is not cloned yet, please call 'clone' before adding new files to the index")
+      end
+
     end
 
-    it "raises an error if there is not file to add at the given path" do
-      expect { @git_repo.add("spec/fixtures/qq.strings") }.to raise_error("Could not find any file to add at path 'spec/fixtures/qq.strings'")
-    end
-
-    it "raises an error if the repo has not beed cloned before" do
-      expect { @git_repo.add("spec/fixtures/de.strings") }.to raise_error("'git' is not cloned yet, please call 'clone' before adding new files to the index")
+    it "adds file at the given path to the git repo index" do
+      underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
+      expect(underlying_git_repo).to receive(:add).with("spec/fixtures/test_git_repo_add/fr.strings")
+      @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', underlying_git_repo)
+      @git_repo.add("spec/fixtures/test_git_repo_add/fr.strings")
     end
 
   end
