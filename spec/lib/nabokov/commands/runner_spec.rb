@@ -7,7 +7,7 @@ describe Nabokov::Runner do
       expect { Nabokov::Runner.run([]) }.to raise_error("nabokovfile is a required parameter and could not be nil")
   end
 
-  it 'raises an error when no Nabokovfile found' do
+  it 'raises an error when no nabokovfile found' do
       allow(STDOUT).to receive(:puts) # this disables puts
       expect { Nabokov::Runner.run(['--nabokovfile=spec/fixtures/not_existed_file']) }.to raise_error SystemExit
   end
