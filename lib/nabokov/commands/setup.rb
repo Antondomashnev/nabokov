@@ -23,6 +23,7 @@ module Nabokov
 
     def run
       ensure_pre_commit_file_exists
+      ensure_pre_commit_file_is_executable
       self
     end
 
@@ -37,10 +38,11 @@ module Nabokov
       FileUtils::mkdir_p("#{@git_path}/hooks")
       @pre_commit_file = "#{@git_path}/hooks/pre-commit"
       FileUtils.touch(@pre_commit_file)
+      FileUtils.chmod("u=x", @pre_commit_file)
     end
 
     def ensure_pre_commit_file_is_executable
-      FileTest.executable?(@pre_commit_file)
+      raise "pre commit file at '#{@pre_commit_file}' is not executable by the effective user id of this process" unless File.executable?(@pre_commit_file)
     end
 
     def default_git_path
