@@ -30,15 +30,12 @@ module Nabokov
 
     def ensure_pre_commit_file_exists
       self.pre_commit_file = File.realpath(self.pre_commit_file) if File.symlink?(self.pre_commit_file)
-      return if self.pre_commit_file
+      return if File.exists?(self.pre_commit_file)
 
-      if File.exist?(@git_path)
-        git_directory = system("grep gitdir #{@git_path} | cut -d ' ' -f 2")
-        self.pre_commit_file = "#{git_directory}/hooks/pre-commit"
-      else
-        FileUtils::mkdir_p("#{@git_path}/hooks")
-        self.pre_commit_file = "#{@git_path}/hooks/pre-commit"
-      end
+      raise ".git folder is not found at '#{@git_path}'" unless Dir.exist?(@git_path)
+
+      FileUtils::mkdir_p("#{@git_path}/hooks")
+      self.pre_commit_file = "#{@git_path}/hooks/pre-commit"
       FileUtils.touch(self.pre_commit_file)
     end
 
