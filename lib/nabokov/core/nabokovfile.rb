@@ -1,4 +1,4 @@
-require 'YAML'
+require 'yaml'
 require 'uri'
 require 'nabokov/core/nabokovfile_keys'
 require 'nabokov/core/nabokovfile_content_validator'
