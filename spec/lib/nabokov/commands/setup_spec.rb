@@ -1,12 +1,18 @@
 require 'nabokov/commands/setup'
+require 'fileutils'
+require 'git'
 
 describe Nabokov::Setup do
 
   describe "run" do
-    before do
+
+    before(:all) do
+      FileUtils::mkdir_p("spec/fixtures/test_git_setup/git_folder")
+      Git.init('spec/fixtures/test_git_setup/git_folder')
+    end
+
+    before(:each) do
       allow(STDOUT).to receive(:puts)
-      system('mkdir spec/fixtures/test_git_setup/git_folder/')
-      system('git init spec/fixtures/test_git_setup/git_folder/')
     end
 
     context "when pre_commit_file path is a file" do
