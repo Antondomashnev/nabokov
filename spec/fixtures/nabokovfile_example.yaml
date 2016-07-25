@@ -1,0 +1,4 @@
+git_repo: 'https://github.com/Antondomashnev/nabokov_example.git'
+localizations:
+  :en: 'spec/fixtures/en.strings'
+  :de: 'spec/fixtures/de.strings'
