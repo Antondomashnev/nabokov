@@ -40,7 +40,7 @@ module Nabokov
     end
 
     def push
-      raise "'git' is not initialized yet, please call either 'clone' or 'init'before pushing any changes to remote" if @git_repo.nil?
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before pushing any changes to remote" if @git_repo.nil?
       @git_repo.push
     end
 

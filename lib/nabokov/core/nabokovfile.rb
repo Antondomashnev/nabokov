@@ -8,7 +8,7 @@ module Nabokov
 
     attr_accessor :localizations_repo_url
     attr_accessor :localization_file_paths
-
+    attr_accessor :localizations_local_path
 
     def initialize(path)
       raise "Couldn't find nabokov file at '#{path}'" unless File.exist?(path)
@@ -45,7 +45,17 @@ module Nabokov
     def read_content(content_hash)
       self.localizations_repo_url = content_hash[NabokovfileKeyes.localizations_repo_url]
       self.localization_file_paths = content_hash[NabokovfileKeyes.localization_file_paths]
-
+      self.localization_local_path = build_localization_local_path
     end
+
+    private
+
+    def build_localization_local_path
+      repo_url_path = URI(self.localizations_repo_url).path.to_s
+      home_dir = Dir.home.to_s
+      repo_url_path_without_extension = File.basename(repo_url_path ,File.extname(repo_url_path))
+      "#{home_dir}#{repo_url_path_without_extension.downcase}"
+    end
+
   end
 end
