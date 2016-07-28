@@ -6,11 +6,9 @@ require 'nabokov/core/nabokovfile_content_validator'
 module Nabokov
   class Nabokovfile
 
-    # @return [URL] repote localizations repository URL
     attr_accessor :localizations_repo_url
-    # @return hash with key as a localization code (e.x en_US)
-    #         and value as a path to localization strings file
     attr_accessor :localization_file_paths
+
 
     def initialize(path)
       raise "Couldn't find nabokov file at '#{path}'" unless File.exist?(path)
@@ -18,6 +16,15 @@ module Nabokov
       yaml_data = read_data_from_yaml_file(nabokovfile, path)
       validate_content(yaml_data)
       read_content(yaml_data)
+    end
+
+    def name
+      "Nabokovfile"
+    end
+
+    def localizations_repo_local_path
+      return @localizations_repo_local_path unless @localizations_repo_local_path.nil?
+      @localizations_repo_local_path ||= ""
     end
 
     private
@@ -38,6 +45,7 @@ module Nabokov
     def read_content(content_hash)
       self.localizations_repo_url = content_hash[NabokovfileKeyes.localizations_repo_url]
       self.localization_file_paths = content_hash[NabokovfileKeyes.localization_file_paths]
+
     end
   end
 end
