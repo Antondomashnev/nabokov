@@ -44,6 +44,11 @@ module Nabokov
       @git_repo.push
     end
 
+    def pull
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before pushing any changes to remote" if @git_repo.nil?
+      @git_repo.pull
+    end
+
     private
 
     def repo_exist_at_local_path

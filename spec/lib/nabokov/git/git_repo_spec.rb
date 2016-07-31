@@ -127,4 +127,25 @@ describe Nabokov::GitRepo do
     end
   end
 
+  describe "pull" do
+    before do
+      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_add")
+    end
+
+    context "when git repo has not been initialized yet" do
+      it "raises an error" do
+        expect { @git_repo.pull }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before pushing any changes to remote")
+      end
+    end
+
+    context "when git repo has been initialized" do
+      it "makes a pull from the remote" do
+        underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
+        expect(underlying_git_repo).to receive(:pull)
+        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_add", underlying_git_repo)
+        @git_repo.pull
+      end
+    end
+  end
+
 end
