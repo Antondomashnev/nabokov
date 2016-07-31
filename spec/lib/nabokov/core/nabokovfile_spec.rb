@@ -13,7 +13,7 @@ describe Nabokov::Nabokovfile do
     end
   end
 
-  context "when the file has legit YAML syntax and exists"
+  context "when the file has legit YAML syntax and exists" do
     before do
       @nabokovfile = Nabokov::Nabokovfile.new('spec/fixtures/nabokovfile_example.yaml')
     end
@@ -27,8 +27,7 @@ describe Nabokov::Nabokovfile do
     end
 
     it "assigns the localization_local_path value" do
-      expect(@nabokovfile.localizations_local_path).to eql("#{Dir.home}/Antondomashnev/nabokov_example")
+      expect(@nabokovfile.localizations_local_path).to eql("#{Dir.home}/.nabokov/antondomashnev/nabokov_example")
     end
   end
-
 end

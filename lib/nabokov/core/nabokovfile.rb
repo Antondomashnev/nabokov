@@ -45,7 +45,7 @@ module Nabokov
     def read_content(content_hash)
       self.localizations_repo_url = content_hash[NabokovfileKeyes.localizations_repo_url]
       self.localization_file_paths = content_hash[NabokovfileKeyes.localization_file_paths]
-      self.localization_local_path = build_localization_local_path
+      self.localizations_local_path = build_localization_local_path
     end
 
     private
@@ -53,8 +53,10 @@ module Nabokov
     def build_localization_local_path
       repo_url_path = URI(self.localizations_repo_url).path.to_s
       home_dir = Dir.home.to_s
-      repo_url_path_without_extension = File.basename(repo_url_path ,File.extname(repo_url_path))
-      "#{home_dir}#{repo_url_path_without_extension.downcase}"
+      repo_url_name_without_extension = File.basename(repo_url_path ,File.extname(repo_url_path)).downcase
+      repo_url_organization = File.dirname(repo_url_path).downcase
+      nabokov_dir_name = "/.nabokov"
+      home_dir + nabokov_dir_name + repo_url_organization + "/" + repo_url_name_without_extension
     end
 
   end
