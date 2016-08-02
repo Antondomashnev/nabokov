@@ -148,14 +148,14 @@ describe Nabokov::GitRepo do
     end
   end
 
-  describe "checkout_new_branch" do
+  describe "checkout_branch" do
     before do
       @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_add")
     end
 
     context "when git repo has not been initialized yet" do
       it "raises an error" do
-        expect { @git_repo.checkout_new_branch("temp") }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before pushing any changes to remote")
+        expect { @git_repo.checkout_branch("temp") }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before pushing any changes to remote")
       end
     end
 
@@ -170,20 +170,20 @@ describe Nabokov::GitRepo do
           git_branch = object_double(Git::Branch.new('temp_branch', 'temp_branch'))
           allow(git_branch).to receive(:checkout)
           expect(@underlying_git_repo).to receive(:branch).with("temp_branch").and_return(git_branch)
-          @git_repo.checkout_new_branch("temp_branch")
+          @git_repo.checkout_branch("temp_branch")
         end
 
         it "checkouts the given branch" do
           git_branch = object_double(Git::Branch.new('temp_branch', 'temp_branch'))
           allow(@underlying_git_repo).to receive(:branch).with(anything).and_return(git_branch)
           expect(git_branch).to receive(:checkout)
-          @git_repo.checkout_new_branch("temp_branch")
+          @git_repo.checkout_branch("temp_branch")
         end
       end
 
       context "when branch name parameter is zero length string" do
         it "raises an error" do
-          expect { @git_repo.checkout_new_branch("") }.to raise_error("branch name could not be nil or zero length")
+          expect { @git_repo.checkout_branch("") }.to raise_error("branch name could not be nil or zero length")
         end
       end
     end
