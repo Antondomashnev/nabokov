@@ -49,6 +49,12 @@ module Nabokov
       @git_repo.pull
     end
 
+    def checkout_new_branch(name)
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before pushing any changes to remote" if @git_repo.nil?
+      raise "branch name could not be nil or zero length" if name.nil? || name.length == 0
+      @git_repo.branch(name).checkout
+    end
+
     private
 
     def repo_exist_at_local_path
