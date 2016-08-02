@@ -1,4 +1,7 @@
-git_repo: 'https://github.com/Antondomashnev/nabokov_example.git'
+git_repo:
+  url: 'https://github.com/Antondomashnev/nabokov_example.git'
+  master_branch: 'shmaster'
+
 localizations:
   :en: 'spec/fixtures/en.strings'
   :de: 'spec/fixtures/de.strings'

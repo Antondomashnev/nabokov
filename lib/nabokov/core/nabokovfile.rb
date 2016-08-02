@@ -7,6 +7,7 @@ module Nabokov
   class Nabokovfile
 
     attr_accessor :localizations_repo_url
+    attr_accessor :localizations_repo_master_branch
     attr_accessor :localization_file_paths
     attr_accessor :localizations_local_path
 
@@ -43,7 +44,9 @@ module Nabokov
     end
 
     def read_content(content_hash)
-      self.localizations_repo_url = content_hash[NabokovfileKeyes.localizations_repo_url]
+      git_repo = content_hash[NabokovfileKeyes.localizations_repo]
+      self.localizations_repo_url = git_repo[NabokovfileKeyes.localizations_repo_url]
+      self.localizations_repo_master_branch = git_repo[NabokovfileKeyes.localizations_repo_master_branch].nil? ? "master" : git_repo[NabokovfileKeyes.localizations_repo_master_branch]
       self.localization_file_paths = content_hash[NabokovfileKeyes.localization_file_paths]
       self.localizations_local_path = build_localization_local_path
     end

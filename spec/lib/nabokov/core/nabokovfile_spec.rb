@@ -29,5 +29,21 @@ describe Nabokov::Nabokovfile do
     it "assigns the localization_local_path value" do
       expect(@nabokovfile.localizations_local_path).to eql("#{Dir.home}/.nabokov/antondomashnev/nabokov_example")
     end
+
+    context "when the master_branch key is presented" do
+      it "assigns the localizations_repo_master_branch value" do
+        expect(@nabokovfile.localizations_repo_master_branch).to eql("shmaster")
+      end
+    end
+
+    context "when the master_branch key is not presented" do
+      before do
+        @nabokovfile = Nabokov::Nabokovfile.new('spec/fixtures/nabokovfile_example_without_master_branch.yaml')
+      end
+
+      it "assigns the localizations_repo_master_branch default value" do
+        expect(@nabokovfile.localizations_repo_master_branch).to eql("master")
+      end
+    end
   end
 end
