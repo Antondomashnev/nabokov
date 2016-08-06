@@ -61,6 +61,13 @@ module Nabokov
       @git_repo.branch(name).delete
     end
 
+    def merge_branches(original_branch, branch_to_be_merged)
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before merging any branches" if @git_repo.nil?
+      raise "original branch name could not be nil or zero length" if original_branch.nil? || original_branch.length == 0
+      raise "branch to be merged in name could not be nil or zero length" if branch_to_be_merged.nil? || branch_to_be_merged.length == 0
+      @git_repo.branch(original_branch).merge(@git_repo.branch(branch_to_be_merged))
+    end
+
     private
 
     def repo_exist_at_local_path

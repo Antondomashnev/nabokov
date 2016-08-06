@@ -222,4 +222,46 @@ describe Nabokov::GitRepo do
       end
     end
   end
+
+  describe "merge_branches" do
+    before do
+      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_add")
+    end
+
+    context "when git repo has not been initialized yet" do
+      it "raises an error" do
+        expect { @git_repo.merge_branches("temp1", "temp2") }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before merging any branches")
+      end
+    end
+
+    context "when git repo is initialized" do
+      before do
+        @underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
+        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_add", @underlying_git_repo)
+      end
+
+      context "when branch name parameters are passed" do
+        it "merges a branch to be merged into original branch" do
+          git_original_branch = object_double(Git::Branch.new('branch1', 'branch1'))
+          git_branch_to_be_merged = object_double(Git::Branch.new('branch2', 'branch2'))
+          allow(git_original_branch).to receive(:merge).with(git_branch_to_be_merged)
+          expect(@underlying_git_repo).to receive(:branch).with("branch1").and_return(git_original_branch)
+          expect(@underlying_git_repo).to receive(:branch).with("branch2").and_return(git_branch_to_be_merged)
+          @git_repo.merge_branches("branch1", "branch2")
+        end
+      end
+
+      context "when original branch name parameter is zero length string" do
+        it "raises an error" do
+          expect { @git_repo.merge_branches("", "branch2") }.to raise_error("original branch name could not be nil or zero length")
+        end
+      end
+
+      context "when branch to be merged name parameter is zero length string" do
+        it "raises an error" do
+          expect { @git_repo.merge_branches("branch1", "") }.to raise_error("branch to be merged in name could not be nil or zero length")
+        end
+      end
+    end
+  end
 end
