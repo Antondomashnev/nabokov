@@ -32,30 +32,26 @@ module Nabokov
 
     def run
       initialize_nabokov_file
-      prepare_git_repo
+      init_git_repo
       self
     end
-
-    private
 
     def initialize_nabokov_file
       @nabokovfile = Nabokovfile.new(@nabokovfile_path)
       ui.puts "Hooray, your Nabokovfile is valid".green
     end
 
-    def prepare_git_repo
+    def init_git_repo
       @git_repo = GitRepo.new(@nabokovfile.localizations_repo_url, @nabokovfile.localizations_local_path)
       if Dir.exists?(@git_repo.local_path)
         ui.puts "Found existed repo at #{@git_repo.local_path}".green
-        ui.puts "Syncing the localization repo at #{@git_repo.local_path} with upstream".green
         @git_repo.init
-        @git_repo.checkout_branch(@nabokovfile.localizations_repo_master_branch)
-        @git_repo.pull
       else
         ui.puts "Cloning the localization repo from #{@git_repo.remote_url} into #{@git_repo.local_path}".green
         @git_repo.clone
       end
+      ui.puts "Checkout master branch".green
+      @git_repo.checkout_branch(@nabokovfile.localizations_repo_master_branch)
     end
-
   end
 end
