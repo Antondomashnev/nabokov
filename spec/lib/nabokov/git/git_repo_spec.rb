@@ -155,7 +155,7 @@ describe Nabokov::GitRepo do
 
     context "when git repo has not been initialized yet" do
       it "raises an error" do
-        expect { @git_repo.checkout_branch("temp") }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before pushing any changes to remote")
+        expect { @git_repo.checkout_branch("temp") }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before checkouting any branch")
       end
     end
 
@@ -189,4 +189,37 @@ describe Nabokov::GitRepo do
     end
   end
 
+  describe "delete_branch" do
+    before do
+      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_add")
+    end
+
+    context "when git repo has not been initialized yet" do
+      it "raises an error" do
+        expect { @git_repo.delete_branch("temp") }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before deleting any branch")
+      end
+    end
+
+    context "when git repo is initialized" do
+      before do
+        @underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
+        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_add", @underlying_git_repo)
+      end
+
+      context "when branch name parameter is passed" do
+        it "deletes a branch with the given name" do
+          git_branch = object_double(Git::Branch.new('temp_branch', 'temp_branch'))
+          allow(git_branch).to receive(:delete)
+          expect(@underlying_git_repo).to receive(:branch).with("temp_branch").and_return(git_branch)
+          @git_repo.delete_branch("temp_branch")
+        end
+      end
+
+      context "when branch name parameter is zero length string" do
+        it "raises an error" do
+          expect { @git_repo.delete_branch("") }.to raise_error("branch name could not be nil or zero length")
+        end
+      end
+    end
+  end
 end

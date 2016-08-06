@@ -50,9 +50,15 @@ module Nabokov
     end
 
     def checkout_branch(name)
-      raise "'git' is not initialized yet, please call either 'clone' or 'init' before pushing any changes to remote" if @git_repo.nil?
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before checkouting any branch" if @git_repo.nil?
       raise "branch name could not be nil or zero length" if name.nil? || name.length == 0
       @git_repo.branch(name).checkout
+    end
+
+    def delete_branch(name)
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before deleting any branch" if @git_repo.nil?
+      raise "branch name could not be nil or zero length" if name.nil? || name.length == 0
+      @git_repo.branch(name).delete
     end
 
     private
