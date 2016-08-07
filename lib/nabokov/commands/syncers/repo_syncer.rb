@@ -9,6 +9,7 @@ module Nabokov
 
     def initialize(argv)
       super
+      @has_changes = false
     end
 
     def validate!
@@ -23,7 +24,7 @@ module Nabokov
       super
       checkout_temporary_branch
       update_localization_files
-      if self.git_repo.has_changes
+      if @has_changes
         checkout_master_branch
         fetch_master_branch_changes
         merge_master_branch_with_temporary
@@ -48,7 +49,12 @@ module Nabokov
         ui.puts "Copying strings file from '#{localization_file_path}' to the repo…".green
         new_file_path = FileManager.copy_and_rename(localization_file_path, self.git_repo.local_path, localization_file_name.to_s)
         self.git_repo.add(new_file_path)
-        self.git_repo.commit("Nabokov localization file '#{localization_file_name}' update…") if self.git_repo.has_changes
+        if self.git_repo.has_changes
+          self.git_repo.commit("Nabokov localization file '#{localization_file_name}' update…")
+          @has_changes = true
+        else
+          ui.puts "'#{localization_file_name}' file doesn't have any changes to commit…".green
+        end
       end
     end
 
