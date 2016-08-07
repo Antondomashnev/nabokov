@@ -23,11 +23,17 @@ module Nabokov
       super
       checkout_temporary_branch
       update_localization_files
-      checkout_master_branch
-      fetch_master_branch_changes
-      merge_master_branch_with_temporary
-      delete_temporary_branch
-      push_changes_to_remote
+      if self.git_repo.has_changes
+        checkout_master_branch
+        fetch_master_branch_changes
+        merge_master_branch_with_temporary
+        delete_temporary_branch
+        push_changes_to_remote
+      else
+        checkout_master_branch
+        fetch_master_branch_changes
+        delete_temporary_branch
+      end
     end
 
     private
@@ -42,7 +48,7 @@ module Nabokov
         ui.puts "Copying strings file from '#{localization_file_path}' to the repo…".green
         new_file_path = FileManager.copy_and_rename(localization_file_path, self.git_repo.local_path, localization_file_name.to_s)
         self.git_repo.add(new_file_path)
-        self.git_repo.commit("Nabokov localization file '#{localization_file_name}' update…")
+        self.git_repo.commit("Nabokov localization file '#{localization_file_name}' update…") if self.git_repo.has_changes
       end
     end
 
