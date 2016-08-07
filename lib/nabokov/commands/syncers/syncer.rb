@@ -57,5 +57,6 @@ module Nabokov
       ui.puts "Checkout master branch…".green
       @git_repo.checkout_branch(@nabokovfile.localizations_repo_master_branch)
     end
+
   end
 end
