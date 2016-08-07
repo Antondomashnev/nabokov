@@ -264,4 +264,74 @@ describe Nabokov::GitRepo do
       end
     end
   end
+
+  describe "has_changes" do
+    before do
+      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
+    end
+
+    context "when git repo has not been initialized yet" do
+      it "raises an error" do
+        expect { @git_repo.has_changes }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before checking if the git repo has changes")
+      end
+    end
+
+    context "when git repo is initialized" do
+      before do
+        @underlying_git_repo = Git.init('spec/fixtures/test_git_repo_has_changes')
+        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+      end
+
+      context "when the repo has added files" do
+        before do
+          added_file = object_double(Git::Status::StatusFile.new("base", {}))
+          allow_any_instance_of(Git::Status).to receive(:added).and_return({:path => "a", :file => added_file})
+          allow_any_instance_of(Git::Status).to receive(:changed).and_return([])
+          allow_any_instance_of(Git::Status).to receive(:deleted).and_return([])
+        end
+
+        it "returns true" do
+          expect(@git_repo.has_changes).to be_truthy
+        end
+      end
+
+      context "when the repo has deleted files" do
+        before do
+          deleted_file = object_double(Git::Status::StatusFile.new("base", {}))
+          allow_any_instance_of(Git::Status).to receive(:deleted).and_return({:path => "a", :file => deleted_file})
+          allow_any_instance_of(Git::Status).to receive(:changed).and_return([])
+          allow_any_instance_of(Git::Status).to receive(:added).and_return([])
+        end
+
+        it "returns true" do
+          expect(@git_repo.has_changes).to be_truthy
+        end
+      end
+
+      context "when the repo has changed files" do
+        before do
+          changed_file = object_double(Git::Status::StatusFile.new("base", {}))
+          allow_any_instance_of(Git::Status).to receive(:changed).and_return({:path => "a", :file => changed_file})
+          allow_any_instance_of(Git::Status).to receive(:deleted).and_return([])
+          allow_any_instance_of(Git::Status).to receive(:added).and_return([])
+        end
+
+        it "returns true" do
+          expect(@git_repo.has_changes).to be_truthy
+        end
+      end
+
+      context "when the repo has no changed, added and deleted files" do
+        before do
+          allow_any_instance_of(Git::Status).to receive(:changed).and_return([])
+          allow_any_instance_of(Git::Status).to receive(:deleted).and_return([])
+          allow_any_instance_of(Git::Status).to receive(:added).and_return([])
+        end
+
+        it "returns false" do
+          expect(@git_repo.has_changes).to be_falsy
+        end
+      end
+    end
+  end
 end

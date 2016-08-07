@@ -68,6 +68,14 @@ module Nabokov
       @git_repo.branch(original_branch).merge(@git_repo.branch(branch_to_be_merged))
     end
 
+    def has_changes
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before checking if the git repo has changes" if @git_repo.nil?
+      return true if @git_repo.status.deleted.count > 0
+      return true if @git_repo.status.added.count > 0
+      return true if @git_repo.status.changed.count > 0
+      false
+    end
+
     private
 
     def repo_exist_at_local_path
