@@ -2,4 +2,4 @@
 $LOAD_PATH.push File.expand_path("../../lib", __FILE__)
 
 require 'nabokov'
-Nabokov::Syncer.run ARGV
+Nabokov::RepoSyncer.run ARGV
