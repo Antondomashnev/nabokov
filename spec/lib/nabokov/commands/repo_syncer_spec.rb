@@ -32,7 +32,7 @@ describe Nabokov::RepoSyncer do
         FileUtils.rm_rf(Dir.glob("spec/fixtures/test_repo_syncer"))
       end
 
-      context "when files there are no changes to sync" do
+      context "when files don't have any changes to sync" do
         before do
           allow(@git_repo).to receive(:has_changes).and_return(false)
         end
@@ -51,7 +51,7 @@ describe Nabokov::RepoSyncer do
         end
       end
 
-      context "when there are changes to sync" do
+      context "when files have changes to sync" do
         before do
           allow(@git_repo).to receive(:has_changes).and_return(true)
         end
@@ -67,8 +67,8 @@ describe Nabokov::RepoSyncer do
           expect(@git_repo).to receive(:checkout_branch).with("master").ordered
           expect(@git_repo).to receive(:pull).ordered
           expect(@git_repo).to receive(:merge_branches).with("master", "nabokov/temporary_branch").ordered
-          expect(@git_repo).to receive(:delete_branch).with("nabokov/temporary_branch").ordered
           expect(@git_repo).to receive(:push).ordered
+          expect(@git_repo).to receive(:delete_branch).with("nabokov/temporary_branch").ordered
 
           Nabokov::RepoSyncer.run(['--nabokovfile=spec/fixtures/nabokovfile_example_without_master_branch.yaml'])
         end

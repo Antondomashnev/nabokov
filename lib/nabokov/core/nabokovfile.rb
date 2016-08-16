@@ -12,6 +12,7 @@ module Nabokov
     attr_accessor :localizations_local_path
 
     def initialize(path)
+      raise "Path is a required parameter" if path.nil?
       raise "Couldn't find nabokov file at '#{path}'" unless File.exist?(path)
       nabokovfile = File.read(path)
       yaml_data = read_data_from_yaml_file(nabokovfile, path)

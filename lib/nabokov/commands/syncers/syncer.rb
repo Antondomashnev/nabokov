@@ -38,23 +38,23 @@ module Nabokov
 
     def initialize_nabokov_file
       @nabokovfile = Nabokovfile.new(@nabokovfile_path)
-      ui.puts "Hooray, your Nabokovfile is valid…".green
+      ui.inform("Hooray, your Nabokovfile is valid…")
     end
 
     def init_git_repo
       @git_repo = GitRepo.new(@nabokovfile.localizations_repo_url, @nabokovfile.localizations_local_path)
       if Dir.exists?(@git_repo.local_path)
-        ui.puts "Found existed repo at #{@git_repo.local_path}…".green
+        ui.inform("Found existed repo at #{@git_repo.local_path}…")
         @git_repo.init
       else
-        ui.puts "Cloning the localization repo from #{@git_repo.remote_url} into #{@git_repo.local_path}…".green
+        ui.inform("Cloning the localization repo from #{@git_repo.remote_url} into #{@git_repo.local_path}…")
         @git_repo.clone
       end
       checkout_master_branch
     end
 
     def checkout_master_branch
-      ui.puts "Checkout master branch…".green
+      ui.inform("Checkout master branch…")
       @git_repo.checkout_branch(@nabokovfile.localizations_repo_master_branch)
     end
 

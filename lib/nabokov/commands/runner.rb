@@ -2,6 +2,7 @@ require 'nabokov/core/nabokovfile'
 require 'nabokov/core/file_manager'
 require 'nabokov/git/git_repo'
 require 'nabokov/version'
+require 'nabokov/helpers/cork_helper'
 require 'claide'
 require 'cork'
 
@@ -13,14 +14,13 @@ module Nabokov
     self.version = Nabokov::VERSION
 
     def initialize(argv)
-      @cork = Cork::Board.new(silent: argv.option('silent', false),
-                              verbose: argv.option('verbose', false))
+      @cork = Cork::Board.new(silent: argv.option('silent', false), verbose: argv.option('verbose', false))
       super
     end
 
     def ui
-      @cork
+      @ui ||= CorkHelper.new(@cork)
     end
-    
+
   end
 end
