@@ -12,7 +12,7 @@ module Nabokov
     end
 
     def show_prompt
-      ui.print "> ".bold.green
+      ui.print("> ".bold.green)
     end
 
     def say(message)

@@ -93,7 +93,7 @@ module Nabokov
       ui.error("Merge failed with conflicts. Nabokov to continue needs your help")
       rescue_option = ui.ask_with_answers("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["Resolve", "Abort"])
       if rescue_option == "resolve"
-        
+
       elsif rescue_option == "abort"
 
       end
