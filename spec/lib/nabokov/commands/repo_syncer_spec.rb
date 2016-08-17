@@ -34,7 +34,7 @@ describe Nabokov::RepoSyncer do
 
       context "when files don't have any changes to sync" do
         before do
-          allow(@git_repo).to receive(:has_changes).and_return(false)
+          allow(@git_repo).to receive(:has_changes?).and_return(false)
         end
 
         it "runs the commands in the correct order" do
@@ -53,7 +53,7 @@ describe Nabokov::RepoSyncer do
 
       context "when files have changes to sync" do
         before do
-          allow(@git_repo).to receive(:has_changes).and_return(true)
+          allow(@git_repo).to receive(:has_changes?).and_return(true)
         end
 
         it "runs the commands in the correct order" do

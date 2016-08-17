@@ -45,7 +45,7 @@ module Nabokov
         ui.say("Copying strings file from '#{localization_file_path}' to the repo…")
         new_file_path = FileManager.copy_and_rename(localization_file_path, self.git_repo.local_path, localization_file_name.to_s)
         self.git_repo.add(new_file_path)
-        if self.git_repo.has_changes
+        if self.git_repo.has_changes?
           self.git_repo.commit("Nabokov localization file '#{localization_file_name}' update…")
           @has_changes = true
         else
@@ -92,11 +92,6 @@ module Nabokov
     def rescue_failed_merge_master_branch_with_temporary
       ui.error("Merge failed with conflicts. Nabokov to continue needs your help")
       rescue_option = ui.ask_with_answers("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["Resolve", "Abort"])
-      if rescue_option == "resolve"
-
-      elsif rescue_option == "abort"
-
-      end
     end
   end
 end

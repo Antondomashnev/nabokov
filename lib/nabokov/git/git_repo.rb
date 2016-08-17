@@ -68,12 +68,23 @@ module Nabokov
       @git_repo.branch(original_branch).merge(@git_repo.branch(branch_to_be_merged))
     end
 
-    def has_changes
+    def has_changes?
       raise "'git' is not initialized yet, please call either 'clone' or 'init' before checking if the git repo has changes" if @git_repo.nil?
       return true if @git_repo.status.deleted.count > 0
       return true if @git_repo.status.added.count > 0
       return true if @git_repo.status.changed.count > 0
       false
+    end
+
+    def has_unfinished_merge?
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before checking if the git repo has unfinished merge" if @git_repo.nil?
+      return @git_repo.has_unmerged_files?
+    end
+
+    def abort_merge
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before aborting merge" if @git_repo.nil?
+      raise "nothing to abort - git repo doesn't have unfinished merge" unless self.has_unfinished_merge?
+      @git_repo.abort_merge
     end
 
     private

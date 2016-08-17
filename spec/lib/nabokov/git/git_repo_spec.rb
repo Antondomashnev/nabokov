@@ -265,14 +265,90 @@ describe Nabokov::GitRepo do
     end
   end
 
-  describe "has_changes" do
+  describe "has_unfinished_merge?" do
     before do
       @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
     end
 
     context "when git repo has not been initialized yet" do
       it "raises an error" do
-        expect { @git_repo.has_changes }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before checking if the git repo has changes")
+        expect { @git_repo.has_unfinished_merge? }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before checking if the git repo has unfinished merge")
+      end
+    end
+
+    context "when git repo is initialized" do
+      before do
+        @underlying_git_repo = Git.init('spec/fixtures/test_git_repo_has_changes')
+        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+      end
+
+      context "when git repo doesn't have unmerged files" do
+        before do
+          allow(@underlying_git_repo).to receive(:has_unmerged_files?).and_return(false)
+        end
+
+        it "returns false" do
+          expect(@git_repo.has_unfinished_merge?).to be_falsy
+        end
+      end
+
+      context "when git repo has unmerged files" do
+        before do
+          allow(@underlying_git_repo).to receive(:has_unmerged_files?).and_return(true)
+        end
+
+        it "returns false" do
+          expect(@git_repo.has_unfinished_merge?).to be_truthy
+        end
+      end
+    end
+  end
+
+  describe "abort_merge" do
+    before do
+      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
+    end
+
+    context "when git repo has not been initialized yet" do
+      it "raises an error" do
+        expect { @git_repo.abort_merge }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before aborting merge")
+      end
+    end
+
+    context "when git repo doesn't have unfinished merge" do
+      before do
+        @underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_has_changes'))
+        @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+        allow(@underlying_git_repo).to receive(:has_unmerged_files?).and_return(false)
+      end
+
+      it "raises an error" do
+        expect { @git_repo.abort_merge }.to raise_error("nothing to abort - git repo doesn't have unfinished merge")
+      end
+    end
+
+    context "when git repo has unfinished merge" do
+      before do
+        @underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_has_changes'))
+        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+        allow(@underlying_git_repo).to receive(:has_unmerged_files?).and_return(true)
+      end
+
+      it "aborts merge" do
+        expect(@underlying_git_repo).to receive(:abort_merge)
+        @git_repo.abort_merge
+      end
+    end
+  end
+
+  describe "has_changes?" do
+    before do
+      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
+    end
+
+    context "when git repo has not been initialized yet" do
+      it "raises an error" do
+        expect { @git_repo.has_changes? }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before checking if the git repo has changes")
       end
     end
 
@@ -291,7 +367,7 @@ describe Nabokov::GitRepo do
         end
 
         it "returns true" do
-          expect(@git_repo.has_changes).to be_truthy
+          expect(@git_repo.has_changes?).to be_truthy
         end
       end
 
@@ -304,7 +380,7 @@ describe Nabokov::GitRepo do
         end
 
         it "returns true" do
-          expect(@git_repo.has_changes).to be_truthy
+          expect(@git_repo.has_changes?).to be_truthy
         end
       end
 
@@ -317,7 +393,7 @@ describe Nabokov::GitRepo do
         end
 
         it "returns true" do
-          expect(@git_repo.has_changes).to be_truthy
+          expect(@git_repo.has_changes?).to be_truthy
         end
       end
 
@@ -329,7 +405,7 @@ describe Nabokov::GitRepo do
         end
 
         it "returns false" do
-          expect(@git_repo.has_changes).to be_falsy
+          expect(@git_repo.has_changes?).to be_falsy
         end
       end
     end
