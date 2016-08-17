@@ -2,7 +2,7 @@ require 'nabokov/core/nabokovfile'
 require 'nabokov/core/file_manager'
 require 'nabokov/git/git_repo'
 require 'nabokov/version'
-require 'nabokov/helpers/cork_helper'
+require 'nabokov/helpers/informator'
 require 'claide'
 require 'cork'
 
@@ -19,7 +19,7 @@ module Nabokov
     end
 
     def ui
-      @ui ||= CorkHelper.new(@cork)
+      @ui ||= Informator.new(@cork)
     end
 
   end
