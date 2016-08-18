@@ -341,6 +341,49 @@ describe Nabokov::GitRepo do
     end
   end
 
+  describe "unmerged_files" do
+    before do
+      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
+    end
+
+    context "when git repo has not been initialized yet" do
+      it "raises an error" do
+        expect { @git_repo.unmerged_files }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before asking for unmerged files")
+      end
+    end
+
+    context "when git repo is initialized" do
+      before do
+        @underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_has_changes'))
+        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+      end
+
+      context "when git repo has unfinished merge" do
+        before do
+          allow(@underlying_git_repo).to receive(:has_unmerged_files?).and_return(true)
+          allow(@underlying_git_repo).to receive(:each_conflict) { |&block|
+            block.call("file1.txt", "", "")
+            block.call("file2.txt", "", "")
+          }
+        end
+
+        it "returns unfinished file pathes" do
+          expect(@git_repo.unmerged_files).to eql(["file1.txt", "file2.txt"])
+        end
+      end
+
+      context "when git repo doesn't have unfinished merge" do
+        before do
+          allow(@underlying_git_repo).to receive(:has_unmerged_files?).and_return(false)
+        end
+
+        it "returns empty array" do
+          expect(@git_repo.unmerged_files).to eql([])
+        end
+      end
+    end
+  end
+
   describe "has_changes?" do
     before do
       @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")

@@ -87,6 +87,16 @@ module Nabokov
       @git_repo.abort_merge
     end
 
+    def unmerged_files
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before asking for unmerged files" if @git_repo.nil?
+      return [] unless @git_repo.has_unmerged_files?
+      conflicted_files = []
+      @git_repo.each_conflict do |file, your_version, their_version|
+        conflicted_files << file
+      end
+      conflicted_files
+    end
+
     private
 
     def repo_exist_at_local_path

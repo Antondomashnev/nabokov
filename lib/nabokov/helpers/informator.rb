@@ -5,7 +5,7 @@ require 'cork'
 
 module Nabokov
   class Informator
-    attr_accessor :ui
+    attr_accessor :no_waiting, :ui
 
     def initialize(cork_board)
       @ui = cork_board
@@ -27,6 +27,12 @@ module Nabokov
       ui.puts(message.red)
     end
 
+    def wait_for_return
+      STDOUT.flush
+      STDIN.gets unless @no_waiting
+      ui.puts
+    end
+
     def ask_with_answers(question, possible_answers)
       ui.print("\n#{question}? [")
 
@@ -44,7 +50,7 @@ module Nabokov
 
       loop do
         show_prompt
-        answer = STDIN.gets.downcase.chomp
+        answer = @no_waiting ? possible_answers[0].downcase : STDIN.gets.downcase.chomp
 
         answer = "yes" if answer == "y"
         answer = "no" if answer == "n"

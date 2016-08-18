@@ -52,10 +52,37 @@ describe Nabokov::Merger do
       context "when user wants to abort the merge" do
         before do
           allow(@informator).to receive(:ask_with_answers).with("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["Resolve", "Abort"]).and_return("Abort")
+          allow(@git_repo).to receive(:abort_merge)
         end
 
         it "aborts" do
           expect(@merger.merge("master", "synchronization")).to eql(Nabokov::MergerResult::ABORTED)
+        end
+
+        it "aborts merge in the repo" do
+          expect(@git_repo).to receive(:abort_merge)
+          @merger.merge("master", "synchronization")
+        end
+      end
+
+      context "when user wants to resolve the merge conflicts" do
+        before do
+          allow(@informator).to receive(:say)
+          allow(@informator).to receive(:wait_for_return)
+          allow(@informator).to receive(:ask_with_answers).with("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["Resolve", "Abort"]).and_return("Resolve")
+          allow(@git_repo).to receive(:unmerged_files).and_return(["file1.txt", "file2.txt"])
+        end
+
+        it "succeeds" do
+          expect(@merger.merge("master", "synchronization")).to eql(Nabokov::MergerResult::SUCCEEDED)
+        end
+
+        it "shows the unmerged files pathes" do
+          expect(@informator).to receive(:say).with("Great! Please resolve conflict in the following files:")
+          expect(@informator).to receive(:say).with("* file1.txt")
+          expect(@informator).to receive(:say).with("* file2.txt")
+          expect(@informator).to receive(:say).with("Please press return when you're ready to move on...")
+          @merger.merge("master", "synchronization")
         end
       end
     end

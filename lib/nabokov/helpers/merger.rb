@@ -30,8 +30,24 @@ module Nabokov
       ui.error("Merge failed with conflicts. Nabokov needs your help to continue")
       proceed_option = ui.ask_with_answers("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["Resolve", "Abort"])
       if proceed_option == "Abort"
-        MergerResult::ABORTED
+        abort_merge
+      elsif proceed_option == "Resolve"
+        resolve_merge
       end
+    end
+
+    def abort_merge
+      @git_repo.abort_merge
+      MergerResult::ABORTED
+    end
+
+    def resolve_merge
+      ui.say("Great! Please resolve conflict in the following files:")
+      @git_repo.unmerged_files.each do |file|
+        ui.say("* #{file}")
+      end
+      ui.say("Please press return when you're ready to move on...")
+      MergerResult::SUCCEEDED
     end
 
     def ui
