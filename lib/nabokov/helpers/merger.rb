@@ -28,10 +28,10 @@ module Nabokov
 
     def rescue_merge
       ui.error("Merge failed with conflicts. Nabokov needs your help to continue")
-      proceed_option = ui.ask_with_answers("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["Resolve", "Abort"])
-      if proceed_option == "Abort"
+      proceed_option = ui.ask_with_answers("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["resolve", "abort"])
+      if proceed_option == "abort"
         abort_merge
-      elsif proceed_option == "Resolve"
+      elsif proceed_option == "resolve"
         resolve_merge
       end
     end
@@ -47,6 +47,7 @@ module Nabokov
         ui.say("* #{file}")
       end
       ui.say("Please press return when you're ready to move on...")
+      ui.wait_for_return
       MergerResult::SUCCEEDED
     end
 

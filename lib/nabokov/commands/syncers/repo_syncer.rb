@@ -10,7 +10,6 @@ module Nabokov
 
     def initialize(argv)
       super
-      @merger = Merger.new(ui, @git_repo)
     end
 
     def validate!
@@ -28,6 +27,7 @@ module Nabokov
       checkout_master_branch
       fetch_master_branch_changes
       if has_changes && merge_master_branch_with_temporary == Nabokov::MergerResult::SUCCEEDED
+        commit_after_merge_resolving
         push_changes_to_remote
       end
       delete_temporary_branch
@@ -43,14 +43,14 @@ module Nabokov
     def update_localization_files
       has_changes = false
       self.nabokovfile.localization_file_paths.each do |localization_file_name, localization_file_path|
-        ui.say("Copying strings file from '#{localization_file_path}' to the repo…")
+        ui.say("Copying strings file from '#{localization_file_path}' to the repo...")
         new_file_path = FileManager.copy_and_rename(localization_file_path, self.git_repo.local_path, localization_file_name.to_s)
         self.git_repo.add(new_file_path)
         if self.git_repo.has_changes?
-          self.git_repo.commit("Nabokov localization file '#{localization_file_name}' update…")
+          self.git_repo.commit("Nabokov localization file '#{localization_file_name}' update...")
           has_changes = true
         else
-          ui.say("'#{localization_file_name}' file doesn't have any changes to commit…")
+          ui.say("'#{localization_file_name}' file doesn't have any changes to commit...")
         end
       end
       has_changes
@@ -77,7 +77,23 @@ module Nabokov
     end
 
     def merge_master_branch_with_temporary
-      @merger.merge(self.nabokovfile.localizations_repo_master_branch, temporary_branch)
+      merger = Merger.new(ui, self.git_repo)
+      merger.merge(self.nabokovfile.localizations_repo_master_branch, temporary_branch)
+    end
+
+    def commit_after_merge_resolving
+      commit_merge = proc do
+        ui.say("Commiting merge conflicts resolving...")
+        self.git_repo.commit("Nabokov merge conflicts manually have been resolved...")
+      end
+
+      if self.git_repo.has_changes?
+        ui.warn("Seems like you haven't resolved the merge, if you want to continue anyway please press return...")
+        ui.wait_for_return
+        commit_merge.call if self.git_repo.has_changes?
+      else
+        commit_merge.call
+      end
     end
 
     def temporary_branch

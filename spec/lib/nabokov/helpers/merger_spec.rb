@@ -45,13 +45,13 @@ describe Nabokov::Merger do
       end
 
       it "asks question how to proceed" do
-        expect(@informator).to receive(:ask_with_answers).with("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["Resolve", "Abort"])
+        expect(@informator).to receive(:ask_with_answers).with("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["resolve", "abort"])
         @merger.merge("master", "synchronization")
       end
 
       context "when user wants to abort the merge" do
         before do
-          allow(@informator).to receive(:ask_with_answers).with("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["Resolve", "Abort"]).and_return("Abort")
+          allow(@informator).to receive(:ask_with_answers).with("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["resolve", "abort"]).and_return("abort")
           allow(@git_repo).to receive(:abort_merge)
         end
 
@@ -69,7 +69,7 @@ describe Nabokov::Merger do
         before do
           allow(@informator).to receive(:say)
           allow(@informator).to receive(:wait_for_return)
-          allow(@informator).to receive(:ask_with_answers).with("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["Resolve", "Abort"]).and_return("Resolve")
+          allow(@informator).to receive(:ask_with_answers).with("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["resolve", "abort"]).and_return("resolve")
           allow(@git_repo).to receive(:unmerged_files).and_return(["file1.txt", "file2.txt"])
         end
 
@@ -82,6 +82,7 @@ describe Nabokov::Merger do
           expect(@informator).to receive(:say).with("* file1.txt")
           expect(@informator).to receive(:say).with("* file2.txt")
           expect(@informator).to receive(:say).with("Please press return when you're ready to move on...")
+          expect(@informator).to receive(:wait_for_return)
           @merger.merge("master", "synchronization")
         end
       end

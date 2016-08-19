@@ -33,6 +33,8 @@ describe Nabokov::RepoSyncer do
         @fake_git_repo = object_double(Nabokov::GitRepo)
         @merger = Nabokov::Merger.new(@informator, @fake_git_repo)
         allow(Nabokov::Merger).to receive(:new).with(anything, anything).and_return(@merger)
+
+        allow_any_instance_of(Nabokov::Informator).to receive(:wait_for_return)
       end
 
       after(:each) do
@@ -73,11 +75,12 @@ describe Nabokov::RepoSyncer do
             expect(@git_repo).to receive(:checkout_branch).with("master").ordered
             expect(@git_repo).to receive(:checkout_branch).with("nabokov/temporary_branch").ordered
             expect(@git_repo).to receive(:add).with("#{@test_git_repo_path}/en.strings").ordered
-            expect(@git_repo).to receive(:commit).with("Nabokov localization file 'en' update…").ordered
+            expect(@git_repo).to receive(:commit).with("Nabokov localization file 'en' update...").ordered
             expect(@git_repo).to receive(:add).with("#{@test_git_repo_path}/de.strings").ordered
-            expect(@git_repo).to receive(:commit).with("Nabokov localization file 'de' update…").ordered
+            expect(@git_repo).to receive(:commit).with("Nabokov localization file 'de' update...").ordered
             expect(@git_repo).to receive(:checkout_branch).with("master").ordered
             expect(@git_repo).to receive(:pull).ordered
+            expect(@git_repo).to receive(:commit).with("Nabokov merge conflicts manually have been resolved...").ordered
             expect(@git_repo).to receive(:push).ordered
             expect(@git_repo).to receive(:delete_branch).with("nabokov/temporary_branch").ordered
 
@@ -95,9 +98,9 @@ describe Nabokov::RepoSyncer do
             expect(@git_repo).to receive(:checkout_branch).with("master").ordered
             expect(@git_repo).to receive(:checkout_branch).with("nabokov/temporary_branch").ordered
             expect(@git_repo).to receive(:add).with("#{@test_git_repo_path}/en.strings").ordered
-            expect(@git_repo).to receive(:commit).with("Nabokov localization file 'en' update…").ordered
+            expect(@git_repo).to receive(:commit).with("Nabokov localization file 'en' update...").ordered
             expect(@git_repo).to receive(:add).with("#{@test_git_repo_path}/de.strings").ordered
-            expect(@git_repo).to receive(:commit).with("Nabokov localization file 'de' update…").ordered
+            expect(@git_repo).to receive(:commit).with("Nabokov localization file 'de' update...").ordered
             expect(@git_repo).to receive(:checkout_branch).with("master").ordered
             expect(@git_repo).to receive(:pull).ordered
             expect(@git_repo).to receive(:delete_branch).with("nabokov/temporary_branch").ordered

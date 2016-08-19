@@ -30,4 +30,11 @@ describe Nabokov::Informator do
       Nabokov::Informator.new(ui).error("Something went wrong")
     end
   end
+
+  describe "warn" do
+    it "prints yellow message" do
+      expect(ui).to receive(:puts).with("Something went wrong".yellow)
+      Nabokov::Informator.new(ui).warn("Something went wrong")
+    end
+  end
 end

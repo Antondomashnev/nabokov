@@ -23,6 +23,10 @@ module Nabokov
       ui.puts(message.green)
     end
 
+    def warn(message)
+      ui.puts(message.yellow)
+    end
+
     def error(message)
       ui.puts(message.red)
     end
