@@ -384,6 +384,47 @@ describe Nabokov::GitRepo do
     end
   end
 
+  describe "reset_to_commit" do
+    before do
+      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
+    end
+
+    context "when git repo has not been initialized yet" do
+      it "raises an error" do
+        expect { @git_repo.reset_to_commit("1234567890") }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before resetting")
+      end
+    end
+
+    context "when git repo is initialized" do
+      before do
+        @underlying_git_repo = Git.init('spec/fixtures/test_git_repo_has_changes')
+        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+      end
+
+      context "when commit sha is not provided" do
+        it "raises an error" do
+          expect { @git_repo.reset_to_commit(nil) }.to raise_error("'commit' is a required parameter and could not be nil")
+        end
+      end
+
+      context "when commit sha is provided" do
+        context "when soft reset" do
+          it "does soft reset" do
+            expect(@underlying_git_repo).to receive(:reset).with("1234567890")
+            @git_repo.reset_to_commit("1234567890")
+          end
+        end
+
+        context "when hard reset" do
+          it "does hard reset" do
+            expect(@underlying_git_repo).to receive(:reset_hard).with("1234567890")
+            @git_repo.reset_to_commit("1234567890", { :hard => true })
+          end
+        end
+      end
+    end
+  end
+
   describe "has_changes?" do
     before do
       @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")

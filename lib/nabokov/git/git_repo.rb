@@ -97,6 +97,16 @@ module Nabokov
       conflicted_files
     end
 
+    def reset_to_commit(commit_sha, options = {})
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before resetting" if @git_repo.nil?
+      raise "'commit' is a required parameter and could not be nil" if commit_sha.nil?
+      if options[:hard]
+        @git_repo.reset_hard(commit_sha)
+      else
+        @git_repo.reset(commit_sha)
+      end
+    end
+
     private
 
     def repo_exist_at_local_path

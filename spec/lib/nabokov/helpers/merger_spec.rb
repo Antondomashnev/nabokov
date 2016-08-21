@@ -64,6 +64,10 @@ describe Nabokov::Merger do
           expect(@git_repo).to receive(:abort_merge)
           @merger.merge("master", "synchronization")
         end
+
+        it "resets the HEAD to last commit" do
+
+        end
       end
 
       context "when user wants to resolve the merge conflicts" do
