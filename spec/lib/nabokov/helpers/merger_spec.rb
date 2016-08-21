@@ -34,6 +34,7 @@ describe Nabokov::Merger do
 
     context "when there are conflicts" do
       before do
+        allow(@git_repo).to receive(:has_changes?)
         allow(@git_repo).to receive(:merge_branches).with("master", "synchronization").and_raise(Git::GitExecuteError.new("conflicts!!!"))
         allow(@informator).to receive(:error).with(anything)
         allow(@informator).to receive(:ask_with_answers).with(anything, anything)
@@ -71,6 +72,8 @@ describe Nabokov::Merger do
           allow(@informator).to receive(:wait_for_return)
           allow(@informator).to receive(:ask_with_answers).with("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["resolve", "abort"]).and_return("resolve")
           allow(@git_repo).to receive(:unmerged_files).and_return(["file1.txt", "file2.txt"])
+          allow(@git_repo).to receive(:add).with(anything)
+          allow(@git_repo).to receive(:commit).with(anything)
         end
 
         it "succeeds" do
@@ -83,6 +86,17 @@ describe Nabokov::Merger do
           expect(@informator).to receive(:say).with("* file2.txt")
           expect(@informator).to receive(:say).with("Please press return when you're ready to move on...")
           expect(@informator).to receive(:wait_for_return)
+          @merger.merge("master", "synchronization")
+        end
+
+        it "adds merged files to index" do
+          expect(@git_repo).to receive(:add).with("file1.txt")
+          expect(@git_repo).to receive(:add).with("file2.txt")
+          @merger.merge("master", "synchronization")
+        end
+
+        it "commits merge files" do
+          expect(@git_repo).to receive(:commit).with("Nabokov merge conflicts manually have been resolved...")
           @merger.merge("master", "synchronization")
         end
       end

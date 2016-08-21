@@ -27,7 +27,6 @@ module Nabokov
       checkout_master_branch
       fetch_master_branch_changes
       if has_changes && merge_master_branch_with_temporary == Nabokov::MergerResult::SUCCEEDED
-        commit_after_merge_resolving
         push_changes_to_remote
       end
       delete_temporary_branch
@@ -79,21 +78,6 @@ module Nabokov
     def merge_master_branch_with_temporary
       merger = Merger.new(ui, self.git_repo)
       merger.merge(self.nabokovfile.localizations_repo_master_branch, temporary_branch)
-    end
-
-    def commit_after_merge_resolving
-      commit_merge = proc do
-        ui.say("Commiting merge conflicts resolving...")
-        self.git_repo.commit("Nabokov merge conflicts manually have been resolved...")
-      end
-
-      if self.git_repo.has_changes?
-        ui.warn("Seems like you haven't resolved the merge, if you want to continue anyway please press return...")
-        ui.wait_for_return
-        commit_merge.call if self.git_repo.has_changes?
-      else
-        commit_merge.call
-      end
     end
 
     def temporary_branch

@@ -43,12 +43,33 @@ module Nabokov
 
     def resolve_merge
       ui.say("Great! Please resolve conflict in the following files:")
-      @git_repo.unmerged_files.each do |file|
+      unmerged_files = @git_repo.unmerged_files
+      unmerged_files.each do |file|
         ui.say("* #{file}")
       end
       ui.say("Please press return when you're ready to move on...")
       ui.wait_for_return
+      commit_after_merge_resolving(unmerged_files)
       MergerResult::SUCCEEDED
+    end
+
+    def commit_after_merge_resolving(merged_files)
+      commit_merge = proc do
+        merged_files.each do |file|
+          ui.say("Adding #{file} to git index...")
+          @git_repo.add(file)
+        end
+        ui.say("Commiting merge conflicts resolving...")
+        @git_repo.commit("Nabokov merge conflicts manually have been resolved...")
+      end
+
+      if @git_repo.has_changes?
+        ui.warn("Seems like you haven't resolved the merge, if you want to continue anyway please press return...")
+        ui.wait_for_return
+        commit_merge.call if @git_repo.has_changes?
+      else
+        commit_merge.call
+      end
     end
 
     def ui

@@ -26,7 +26,8 @@ describe Nabokov::RepoSyncer do
         allow(@nabokovfile).to receive(:localizations_local_path).and_return(@test_git_repo_path)
         allow(Nabokov::Nabokovfile).to receive(:new).with(anything).and_return(@nabokovfile)
 
-        @git_repo = Nabokov::GitRepo.new(@test_git_repo_url, @test_git_repo_path)
+        underlying_git_repo = object_double(Git::Base)
+        @git_repo = Nabokov::GitRepo.new(@test_git_repo_url, @test_git_repo_path, underlying_git_repo)
         allow(Nabokov::GitRepo).to receive(:new).with(anything, anything).and_return(@git_repo)
 
         @informator = object_double(Nabokov::Informator)
@@ -80,7 +81,6 @@ describe Nabokov::RepoSyncer do
             expect(@git_repo).to receive(:commit).with("Nabokov localization file 'de' update...").ordered
             expect(@git_repo).to receive(:checkout_branch).with("master").ordered
             expect(@git_repo).to receive(:pull).ordered
-            expect(@git_repo).to receive(:commit).with("Nabokov merge conflicts manually have been resolved...").ordered
             expect(@git_repo).to receive(:push).ordered
             expect(@git_repo).to receive(:delete_branch).with("nabokov/temporary_branch").ordered
 
@@ -89,23 +89,47 @@ describe Nabokov::RepoSyncer do
         end
 
         context "when merge has conflicts" do
-          before do
-            allow(@merger).to receive(:merge).with("master", "nabokov/temporary_branch").and_return(Nabokov::MergerResult::ABORTED)
+          context "when merge is aborted" do
+            before do
+              allow(@merger).to receive(:merge).with("master", "nabokov/temporary_branch").and_return(Nabokov::MergerResult::ABORTED)
+            end
+
+            it "runs the commands in the correct order" do
+              expect(@git_repo).to receive(:init).ordered
+              expect(@git_repo).to receive(:checkout_branch).with("master").ordered
+              expect(@git_repo).to receive(:checkout_branch).with("nabokov/temporary_branch").ordered
+              expect(@git_repo).to receive(:add).with("#{@test_git_repo_path}/en.strings").ordered
+              expect(@git_repo).to receive(:commit).with("Nabokov localization file 'en' update...").ordered
+              expect(@git_repo).to receive(:add).with("#{@test_git_repo_path}/de.strings").ordered
+              expect(@git_repo).to receive(:commit).with("Nabokov localization file 'de' update...").ordered
+              expect(@git_repo).to receive(:checkout_branch).with("master").ordered
+              expect(@git_repo).to receive(:pull).ordered
+              expect(@git_repo).to receive(:delete_branch).with("nabokov/temporary_branch").ordered
+
+              Nabokov::RepoSyncer.run(['--nabokovfile=spec/fixtures/nabokovfile_example_without_master_branch.yaml'])
+            end
           end
 
-          it "runs the commands in the correct order" do
-            expect(@git_repo).to receive(:init).ordered
-            expect(@git_repo).to receive(:checkout_branch).with("master").ordered
-            expect(@git_repo).to receive(:checkout_branch).with("nabokov/temporary_branch").ordered
-            expect(@git_repo).to receive(:add).with("#{@test_git_repo_path}/en.strings").ordered
-            expect(@git_repo).to receive(:commit).with("Nabokov localization file 'en' update...").ordered
-            expect(@git_repo).to receive(:add).with("#{@test_git_repo_path}/de.strings").ordered
-            expect(@git_repo).to receive(:commit).with("Nabokov localization file 'de' update...").ordered
-            expect(@git_repo).to receive(:checkout_branch).with("master").ordered
-            expect(@git_repo).to receive(:pull).ordered
-            expect(@git_repo).to receive(:delete_branch).with("nabokov/temporary_branch").ordered
+          context "when merge is succeeded" do
+            before do
+              allow(@merger).to receive(:merge).with("master", "nabokov/temporary_branch").and_return(Nabokov::MergerResult::SUCCEEDED)
+            end
 
-            Nabokov::RepoSyncer.run(['--nabokovfile=spec/fixtures/nabokovfile_example_without_master_branch.yaml'])
+            it "runs the commands in the correct order" do
+              expect(@git_repo).to receive(:init).ordered
+              expect(@git_repo).to receive(:checkout_branch).with("master").ordered
+              expect(@git_repo).to receive(:checkout_branch).with("nabokov/temporary_branch").ordered
+              expect(@git_repo).to receive(:add).with("#{@test_git_repo_path}/en.strings").ordered
+              expect(@git_repo).to receive(:commit).with("Nabokov localization file 'en' update...").ordered
+              expect(@git_repo).to receive(:add).with("#{@test_git_repo_path}/de.strings").ordered
+              expect(@git_repo).to receive(:commit).with("Nabokov localization file 'de' update...").ordered
+              expect(@git_repo).to receive(:checkout_branch).with("master").ordered
+              expect(@git_repo).to receive(:pull).ordered
+              expect(@git_repo).to receive(:push).ordered
+              expect(@git_repo).to receive(:delete_branch).with("nabokov/temporary_branch").ordered
+
+              Nabokov::RepoSyncer.run(['--nabokovfile=spec/fixtures/nabokovfile_example_without_master_branch.yaml'])
+            end
           end
         end
       end
