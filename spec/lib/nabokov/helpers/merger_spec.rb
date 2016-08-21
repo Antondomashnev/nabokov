@@ -21,7 +21,10 @@ describe Nabokov::Merger do
   describe "merge" do
     before do
       @informator = double(Nabokov::Informator)
+
       @git_repo = double(Nabokov::GitRepo)
+      allow(@git_repo).to receive(:log).with(1).and_return([ "1234567890" ])
+
       @merger = Nabokov::Merger.new(@informator, @git_repo)
     end
 
@@ -54,6 +57,7 @@ describe Nabokov::Merger do
         before do
           allow(@informator).to receive(:ask_with_answers).with("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["resolve", "abort"]).and_return("abort")
           allow(@git_repo).to receive(:abort_merge)
+          allow(@git_repo).to receive(:reset_to_commit).with(anything, anything)
         end
 
         it "aborts" do
@@ -66,7 +70,8 @@ describe Nabokov::Merger do
         end
 
         it "resets the HEAD to last commit" do
-
+          expect(@git_repo).to receive(:reset_to_commit).with("1234567890", { :hard => true })
+          @merger.merge("master", "synchronization")
         end
       end
 

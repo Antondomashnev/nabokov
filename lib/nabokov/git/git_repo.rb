@@ -107,6 +107,14 @@ module Nabokov
       end
     end
 
+    def log(number_of_commits)
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before getting the log" if @git_repo.nil?
+      commits = @git_repo.log(number_of_commits)
+      commits.map do |commit|
+        commit.sha
+      end
+    end
+
     private
 
     def repo_exist_at_local_path

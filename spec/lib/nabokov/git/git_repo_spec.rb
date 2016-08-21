@@ -384,6 +384,43 @@ describe Nabokov::GitRepo do
     end
   end
 
+  describe "log" do
+    before do
+      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
+    end
+
+    context "when git repo has not been initialized yet" do
+      it "raises an error" do
+        expect { @git_repo.log(5) }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before getting the log")
+      end
+    end
+
+    context "when git repo is initialized" do
+      before do
+        @underlying_git_repo = Git.init('spec/fixtures/test_git_repo_has_changes')
+        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+      end
+
+      it "returns last n commit shas" do
+        commit1 = object_double(Git::Object::Commit.new("base", "1234567890", nil))
+        allow(commit1).to receive(:sha).and_return("1234567890")
+        commit2 = object_double(Git::Object::Commit.new("base", "1234567891", nil))
+        allow(commit2).to receive(:sha).and_return("1234567891")
+        commit3 = object_double(Git::Object::Commit.new("base", "1234567892", nil))
+        allow(commit3).to receive(:sha).and_return("1234567892")
+        commit4 = object_double(Git::Object::Commit.new("base", "1234567893", nil))
+        allow(commit4).to receive(:sha).and_return("1234567893")
+        commit5 = object_double(Git::Object::Commit.new("base", "1234567894", nil))
+        allow(commit5).to receive(:sha).and_return("1234567894")
+        allow(@underlying_git_repo).to receive(:log).with(3).and_return([ commit1, commit2, commit3 ])
+        allow(@underlying_git_repo).to receive(:log).with(5).and_return([ commit1, commit2, commit3, commit4, commit5 ])
+
+        expect(@git_repo.log(3)).to eql([ "1234567890", "1234567891", "1234567892" ])
+        expect(@git_repo.log(5)).to eql([ "1234567890", "1234567891", "1234567892", "1234567893", "1234567894" ])
+      end
+    end
+  end
+
   describe "reset_to_commit" do
     before do
       @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")

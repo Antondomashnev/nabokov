@@ -16,6 +16,7 @@ module Nabokov
     end
 
     def merge(head, branch)
+      @current_commit = @git_repo.log(1).first
       begin
         @git_repo.merge_branches(head, branch)
         MergerResult::SUCCEEDED
@@ -38,6 +39,7 @@ module Nabokov
 
     def abort_merge
       @git_repo.abort_merge
+      @git_repo.reset_to_commit(@current_commit, { :hard => true })
       MergerResult::ABORTED
     end
 
