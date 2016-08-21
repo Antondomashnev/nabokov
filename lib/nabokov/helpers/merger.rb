@@ -8,15 +8,15 @@ module Nabokov
   end
 
   class Merger
-    def initialize(informator, git_repo)
+    def initialize(informator, git_repo, rescue_commit_sha = nil)
       raise "'informator' is a required parameter" if informator.nil?
       raise "'git_repo' is a required parameter" if git_repo.nil?
+      @rescue_commit_sha = rescue_commit_sha
       @git_repo = git_repo
       @informator = informator
     end
 
     def merge(head, branch)
-      @current_commit = @git_repo.log(1).first
       begin
         @git_repo.merge_branches(head, branch)
         MergerResult::SUCCEEDED
@@ -39,7 +39,7 @@ module Nabokov
 
     def abort_merge
       @git_repo.abort_merge
-      @git_repo.reset_to_commit(@current_commit, { :hard => true })
+      @git_repo.reset_to_commit(@rescue_commit_sha, { :hard => true }) unless @rescue_commit_sha.nil?
       MergerResult::ABORTED
     end
 
@@ -47,7 +47,8 @@ module Nabokov
       ui.say("Great! Please resolve conflict in the following files:")
       unmerged_files = @git_repo.unmerged_files
       unmerged_files.each do |file|
-        ui.say("* #{file}")
+        file_path = @git_repo.local_path + "/" + file
+        ui.say("* #{file_path}")
       end
       ui.say("Please press return when you're ready to move on...")
       ui.wait_for_return
@@ -58,14 +59,15 @@ module Nabokov
     def commit_after_merge_resolving(merged_files)
       commit_merge = proc do
         merged_files.each do |file|
-          ui.say("Adding #{file} to git index...")
-          @git_repo.add(file)
+          file_path = @git_repo.local_path + "/" + file
+          ui.say("Adding #{file_path} to git index...")
+          @git_repo.add(file_path)
         end
         ui.say("Commiting merge conflicts resolving...")
         @git_repo.commit("Nabokov merge conflicts manually have been resolved...")
       end
 
-      if @git_repo.has_changes?
+      unless @git_repo.has_changes?
         ui.warn("Seems like you haven't resolved the merge, if you want to continue anyway please press return...")
         ui.wait_for_return
         commit_merge.call if @git_repo.has_changes?

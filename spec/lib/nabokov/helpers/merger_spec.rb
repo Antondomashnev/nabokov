@@ -21,11 +21,9 @@ describe Nabokov::Merger do
   describe "merge" do
     before do
       @informator = double(Nabokov::Informator)
-
       @git_repo = double(Nabokov::GitRepo)
-      allow(@git_repo).to receive(:log).with(1).and_return([ "1234567890" ])
-
-      @merger = Nabokov::Merger.new(@informator, @git_repo)
+      allow(@git_repo).to receive(:local_path).and_return("nabokov/temporary_git_repo")
+      @merger = Nabokov::Merger.new(@informator, @git_repo, "1234567890")
     end
 
     context "when there are no conflicts" do
@@ -91,16 +89,16 @@ describe Nabokov::Merger do
 
         it "shows the unmerged files pathes" do
           expect(@informator).to receive(:say).with("Great! Please resolve conflict in the following files:")
-          expect(@informator).to receive(:say).with("* file1.txt")
-          expect(@informator).to receive(:say).with("* file2.txt")
+          expect(@informator).to receive(:say).with("* nabokov/temporary_git_repo/file1.txt")
+          expect(@informator).to receive(:say).with("* nabokov/temporary_git_repo/file2.txt")
           expect(@informator).to receive(:say).with("Please press return when you're ready to move on...")
           expect(@informator).to receive(:wait_for_return)
           @merger.merge("master", "synchronization")
         end
 
         it "adds merged files to index" do
-          expect(@git_repo).to receive(:add).with("file1.txt")
-          expect(@git_repo).to receive(:add).with("file2.txt")
+          expect(@git_repo).to receive(:add).with("nabokov/temporary_git_repo/file1.txt")
+          expect(@git_repo).to receive(:add).with("nabokov/temporary_git_repo/file2.txt")
           @merger.merge("master", "synchronization")
         end
 

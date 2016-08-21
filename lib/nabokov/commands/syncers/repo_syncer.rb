@@ -26,7 +26,7 @@ module Nabokov
       has_changes = update_localization_files
       checkout_master_branch
       fetch_master_branch_changes
-      if has_changes && merge_master_branch_with_temporary == Nabokov::MergerResult::SUCCEEDED
+      if has_changes && merge_master_branch_with_temporary(@rescue_commit_sha) == Nabokov::MergerResult::SUCCEEDED
         push_changes_to_remote
       end
       delete_temporary_branch
@@ -58,6 +58,7 @@ module Nabokov
     def checkout_master_branch
       ui.say("Checkout master branch…")
       self.git_repo.checkout_branch(self.nabokovfile.localizations_repo_master_branch)
+      @rescue_commit_sha = self.git_repo.log(1)
     end
 
     def fetch_master_branch_changes
@@ -75,8 +76,8 @@ module Nabokov
       self.git_repo.push
     end
 
-    def merge_master_branch_with_temporary
-      merger = Merger.new(ui, self.git_repo)
+    def merge_master_branch_with_temporary(rescue_commit_sha = nil)
+      merger = Merger.new(ui, self.git_repo, rescue_commit_sha)
       merger.merge(self.nabokovfile.localizations_repo_master_branch, temporary_branch)
     end
 
