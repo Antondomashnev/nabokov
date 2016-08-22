@@ -76,11 +76,13 @@ describe Nabokov::Merger do
       context "when user wants to resolve the merge conflicts" do
         before do
           allow(@informator).to receive(:say)
+          allow(@informator).to receive(:warn)
           allow(@informator).to receive(:wait_for_return)
           allow(@informator).to receive(:ask_with_answers).with("Would you like to resolve the conflicts manually or abort the synchronization?\n", ["resolve", "abort"]).and_return("resolve")
           allow(@git_repo).to receive(:unmerged_files).and_return(["file1.txt", "file2.txt"])
           allow(@git_repo).to receive(:add).with(anything)
           allow(@git_repo).to receive(:commit).with(anything)
+          allow(@git_repo).to receive(:has_changes?).and_return(true)
         end
 
         it "succeeds" do
