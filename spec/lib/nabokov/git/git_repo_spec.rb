@@ -477,6 +477,7 @@ describe Nabokov::GitRepo do
       before do
         @underlying_git_repo = Git.init('spec/fixtures/test_git_repo_has_changes')
         @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+        allow_any_instance_of(Git::Status).to receive(:construct_status) do end
       end
 
       context "when the repo has added files" do
