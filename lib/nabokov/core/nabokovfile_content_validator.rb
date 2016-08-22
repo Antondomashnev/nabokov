@@ -18,8 +18,10 @@ module Nabokov
     private
 
     def validate_git_repo
-      url_key = NabokovfileKeyes.localizations_repo_url
-      url = self.nabokovfile_hash[url_key]
+      git_repo = self.nabokovfile_hash[NabokovfileKeyes.localizations_repo]
+      raise "Localizations repo must be a type of Hash" unless git_repo.is_a?(Hash)
+
+      url = git_repo[NabokovfileKeyes.localizations_repo_url]
       raise "'#{url}' is not a valid URL" unless url =~ URI::regexp()
       raise "Please use 'https://...' instead of '#{url}' only supports encrypted requests" unless url.start_with?("https://")
     end

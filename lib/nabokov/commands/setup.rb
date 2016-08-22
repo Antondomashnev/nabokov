@@ -1,23 +1,18 @@
-require 'nabokov/version'
-require 'claide'
-require 'cork'
+require 'nabokov/commands/runner'
 require 'fileutils'
 
 module Nabokov
-  class Setup < CLAide::Command
+  class Setup < Runner
     self.summary = 'Set up the repository hook to sync app localization.'
     self.command = 'setup'
-    self.version = Nabokov::VERSION
 
     attr_reader :pre_commit_file
 
     def initialize(argv)
       @pre_commit_file = argv.option('pre_commit_file')
       @pre_commit_file ||= default_pre_commit_file
-
       @git_path = argv.option('git_path')
       @git_path ||= default_git_path
-
       super
     end
 
