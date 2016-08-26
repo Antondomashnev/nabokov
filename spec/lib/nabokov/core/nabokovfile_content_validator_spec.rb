@@ -5,7 +5,7 @@ describe Nabokov::NabokovfileContentValidator do
   before do
     @valid_hash = {
         Nabokov::NabokovfileKeyes.localizations_repo => {Nabokov::NabokovfileKeyes.localizations_repo_url => "https://github.com/nabokov/nabokov", Nabokov::NabokovfileKeyes.localizations_repo_master_branch => "nabokov_master"},
-        Nabokov::NabokovfileKeyes.localization_file_paths => {"en" => "spec/fixtures/en.strings", "de" => "spec/fixtures/de.strings"}
+        Nabokov::NabokovfileKeyes.project_repo => {Nabokov::NabokovfileKeyes.project_localization_file_paths => {"en" => "spec/fixtures/en.strings", "de" => "spec/fixtures/de.strings"}, Nabokov::NabokovfileKeyes.project_local_path => "spec/fixtures/local_project"}
     }
   end
 
@@ -51,10 +51,70 @@ describe Nabokov::NabokovfileContentValidator do
     end
   end
 
+  context "when the project_repo is not a type of Hash" do
+    context "when string" do
+      it "raises an error" do
+        @valid_hash[Nabokov::NabokovfileKeyes.project_repo] = 'param:pam'
+        validator = Nabokov::NabokovfileContentValidator.new(@valid_hash)
+        expect { validator.validate }.to raise_error("Project repo must be a type of Hash")
+      end
+    end
+
+    context "when array" do
+      it "raises an error" do
+        @valid_hash[Nabokov::NabokovfileKeyes.project_repo] = [ "key", "value" ]
+        validator = Nabokov::NabokovfileContentValidator.new(@valid_hash)
+        expect { validator.validate }.to raise_error("Project repo must be a type of Hash")
+      end
+    end
+
+    context "when number" do
+      it "raises an error" do
+        @valid_hash[Nabokov::NabokovfileKeyes.project_repo] = 10
+        validator = Nabokov::NabokovfileContentValidator.new(@valid_hash)
+        expect { validator.validate }.to raise_error("Project repo must be a type of Hash")
+      end
+    end
+  end
+
+  context "when the localizations_repo is not a type of Hash" do
+    context "when string" do
+      it "raises an error" do
+        @valid_hash[Nabokov::NabokovfileKeyes.localizations_repo] = 'param:pam'
+        validator = Nabokov::NabokovfileContentValidator.new(@valid_hash)
+        expect { validator.validate }.to raise_error("Localizations repo must be a type of Hash")
+      end
+    end
+
+    context "when array" do
+      it "raises an error" do
+        @valid_hash[Nabokov::NabokovfileKeyes.localizations_repo] = [ "key", "value" ]
+        validator = Nabokov::NabokovfileContentValidator.new(@valid_hash)
+        expect { validator.validate }.to raise_error("Localizations repo must be a type of Hash")
+      end
+    end
+
+    context "when number" do
+      it "raises an error" do
+        @valid_hash[Nabokov::NabokovfileKeyes.localizations_repo] = 10
+        validator = Nabokov::NabokovfileContentValidator.new(@valid_hash)
+        expect { validator.validate }.to raise_error("Localizations repo must be a type of Hash")
+      end
+    end
+  end
+
+  context "when there is no project repo local path" do
+    it "raises an error" do
+      @valid_hash[Nabokov::NabokovfileKeyes.project_repo][Nabokov::NabokovfileKeyes.project_local_path] = nil
+      validator = Nabokov::NabokovfileContentValidator.new(@valid_hash)
+      expect { validator.validate }.to raise_error("Project repo local path must be presented")
+    end
+  end
+
   context "when the localizations is not a type of Hash" do
     context "when string" do
       it "raises an error" do
-        @valid_hash[Nabokov::NabokovfileKeyes.localization_file_paths] = 'param:pam'
+        @valid_hash[Nabokov::NabokovfileKeyes.project_repo][Nabokov::NabokovfileKeyes.project_localization_file_paths] = 'param:pam'
         validator = Nabokov::NabokovfileContentValidator.new(@valid_hash)
         expect { validator.validate }.to raise_error("Localizations must be a type of Hash")
       end
@@ -62,7 +122,7 @@ describe Nabokov::NabokovfileContentValidator do
 
     context "when array" do
       it "raises an error" do
-        @valid_hash[Nabokov::NabokovfileKeyes.localization_file_paths] = [ "key", "value" ]
+        @valid_hash[Nabokov::NabokovfileKeyes.project_repo][Nabokov::NabokovfileKeyes.project_localization_file_paths] = [ "key", "value" ]
         validator = Nabokov::NabokovfileContentValidator.new(@valid_hash)
         expect { validator.validate }.to raise_error("Localizations must be a type of Hash")
       end
@@ -70,7 +130,7 @@ describe Nabokov::NabokovfileContentValidator do
 
     context "when number" do
       it "raises an error" do
-        @valid_hash[Nabokov::NabokovfileKeyes.localization_file_paths] = 10
+        @valid_hash[Nabokov::NabokovfileKeyes.project_repo][Nabokov::NabokovfileKeyes.project_localization_file_paths] = 10
         validator = Nabokov::NabokovfileContentValidator.new(@valid_hash)
         expect { validator.validate }.to raise_error("Localizations must be a type of Hash")
       end
@@ -79,7 +139,7 @@ describe Nabokov::NabokovfileContentValidator do
 
   context "when the localizations array contains file that does not exist" do
     it "raises an error" do
-      @valid_hash[Nabokov::NabokovfileKeyes.localization_file_paths] = {"en" => "spec/fixtures/en.strings",
+      @valid_hash[Nabokov::NabokovfileKeyes.project_repo][Nabokov::NabokovfileKeyes.project_localization_file_paths] = {"en" => "spec/fixtures/en.strings",
                                                                         "de" => "spec/fixtures/fr.strings"}
       validator = Nabokov::NabokovfileContentValidator.new(@valid_hash)
       expect { validator.validate }.to raise_error("Couldn't find strings file at 'spec/fixtures/fr.strings'")

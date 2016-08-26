@@ -41,7 +41,7 @@ module Nabokov
 
     def update_localization_files
       has_changes = false
-      self.nabokovfile.localization_file_paths.each do |localization_file_name, localization_file_path|
+      self.nabokovfile.project_localization_file_paths.each do |localization_file_name, localization_file_path|
         ui.say("Copying strings file from '#{localization_file_path}' to the repo...")
         new_file_path = FileManager.copy_and_rename(localization_file_path, self.git_repo.local_path, localization_file_name.to_s)
         self.git_repo.add(new_file_path)
