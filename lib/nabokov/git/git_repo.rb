@@ -8,8 +8,7 @@ module Nabokov
 
     attr_accessor :remote_url, :local_path
 
-    def initialize(remote_url, local_path, git_repo = nil)
-      raise "remote_url is a required parameter" if remote_url.nil?
+    def initialize(local_path, remote_url = nil, git_repo = nil)
       raise "local_path is a required parameter" if local_path.nil?
       @local_pathname = Pathname.new(local_path)
       @git_repo = git_repo
@@ -79,6 +78,11 @@ module Nabokov
     def has_unfinished_merge?
       raise "'git' is not initialized yet, please call either 'clone' or 'init' before checking if the git repo has unfinished merge" if @git_repo.nil?
       return @git_repo.has_unmerged_files?
+    end
+
+    def current_branch
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before getting the current branch" if @git_repo.nil?
+      return @git_repo.current_branch
     end
 
     def abort_merge

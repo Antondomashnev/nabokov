@@ -9,12 +9,12 @@ describe Nabokov::GitRepo do
 
   describe "initialization" do
     it "stores remote url after initialization" do
-      git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/bla")
+      git_repo = Nabokov::GitRepo.new("spec/fixtures/bla", @remote_url)
       expect(git_repo.remote_url).to eql(@remote_url)
     end
 
     it "stores local path after initialization" do
-      git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/bla")
+      git_repo = Nabokov::GitRepo.new("spec/fixtures/bla", @remote_url)
       expect(git_repo.local_path).to eql("spec/fixtures/bla")
     end
   end
@@ -23,7 +23,7 @@ describe Nabokov::GitRepo do
 
     context "when there is a repo at the given local path" do
       before do
-        @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_add")
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url)
       end
 
       it "raises an error to use init method instead" do
@@ -33,11 +33,11 @@ describe Nabokov::GitRepo do
 
     context "when there is no repo at the given local path" do
       before do
-        @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_clone")
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_clone", @remote_url)
       end
 
       it "clones the repo from the correct remote" do
-        allow(Git).to receive(:clone).with(@remote_url, anything, anything)
+        allow(Git).to receive(:clone).with(anything, anything, @remote_url)
         @git_repo.clone
       end
 
@@ -58,7 +58,7 @@ describe Nabokov::GitRepo do
 
   describe "add" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_add")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url)
     end
 
     context "when there is not file to add at the given path" do
@@ -78,7 +78,7 @@ describe Nabokov::GitRepo do
         it "adds file at the given path to the git repo index" do
           underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
           expect(underlying_git_repo).to receive(:add).with("spec/fixtures/test_git_repo_add/fr.strings")
-          @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_add", underlying_git_repo)
+          @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url, underlying_git_repo)
           @git_repo.add("spec/fixtures/test_git_repo_add/fr.strings")
         end
       end
@@ -87,7 +87,7 @@ describe Nabokov::GitRepo do
 
   describe "commit" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_add")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url)
     end
 
     context "when git repo has not been initialized yet" do
@@ -100,7 +100,7 @@ describe Nabokov::GitRepo do
       it "makes a commit with correct message" do
         underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
         expect(underlying_git_repo).to receive(:commit).with("Automatic commit by nabokov")
-        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_add", underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url, underlying_git_repo)
         @git_repo.commit
       end
     end
@@ -108,7 +108,7 @@ describe Nabokov::GitRepo do
 
   describe "push" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_add")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url)
     end
 
     context "when git repo has not been initialized yet" do
@@ -121,7 +121,7 @@ describe Nabokov::GitRepo do
       it "makes a push to the remote" do
         underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
         expect(underlying_git_repo).to receive(:push)
-        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_add", underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url, underlying_git_repo)
         @git_repo.push
       end
     end
@@ -129,7 +129,7 @@ describe Nabokov::GitRepo do
 
   describe "pull" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_add")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url)
     end
 
     context "when git repo has not been initialized yet" do
@@ -142,7 +142,7 @@ describe Nabokov::GitRepo do
       it "makes a pull from the remote" do
         underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
         expect(underlying_git_repo).to receive(:pull)
-        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_add", underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url, underlying_git_repo)
         @git_repo.pull
       end
     end
@@ -150,7 +150,7 @@ describe Nabokov::GitRepo do
 
   describe "checkout_branch" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_add")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url)
     end
 
     context "when git repo has not been initialized yet" do
@@ -162,7 +162,7 @@ describe Nabokov::GitRepo do
     context "when git repo is initialized" do
       before do
         @underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
-        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_add", @underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url, @underlying_git_repo)
       end
 
       context "when branch name parameter is passed" do
@@ -191,7 +191,7 @@ describe Nabokov::GitRepo do
 
   describe "delete_branch" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_add")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url)
     end
 
     context "when git repo has not been initialized yet" do
@@ -203,7 +203,7 @@ describe Nabokov::GitRepo do
     context "when git repo is initialized" do
       before do
         @underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
-        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_add", @underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url, @underlying_git_repo)
       end
 
       context "when branch name parameter is passed" do
@@ -225,7 +225,7 @@ describe Nabokov::GitRepo do
 
   describe "merge_branches" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_add")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url)
     end
 
     context "when git repo has not been initialized yet" do
@@ -237,7 +237,7 @@ describe Nabokov::GitRepo do
     context "when git repo is initialized" do
       before do
         @underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_add'))
-        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_add", @underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_add", @remote_url, @underlying_git_repo)
       end
 
       context "when branch name parameters are passed" do
@@ -267,7 +267,7 @@ describe Nabokov::GitRepo do
 
   describe "has_unfinished_merge?" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url)
     end
 
     context "when git repo has not been initialized yet" do
@@ -279,7 +279,7 @@ describe Nabokov::GitRepo do
     context "when git repo is initialized" do
       before do
         @underlying_git_repo = Git.init('spec/fixtures/test_git_repo_has_changes')
-        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url, @underlying_git_repo)
       end
 
       context "when git repo doesn't have unmerged files" do
@@ -306,7 +306,7 @@ describe Nabokov::GitRepo do
 
   describe "abort_merge" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url)
     end
 
     context "when git repo has not been initialized yet" do
@@ -318,7 +318,7 @@ describe Nabokov::GitRepo do
     context "when git repo doesn't have unfinished merge" do
       before do
         @underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_has_changes'))
-        @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url, @underlying_git_repo)
         allow(@underlying_git_repo).to receive(:has_unmerged_files?).and_return(false)
       end
 
@@ -330,7 +330,7 @@ describe Nabokov::GitRepo do
     context "when git repo has unfinished merge" do
       before do
         @underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_has_changes'))
-        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url, @underlying_git_repo)
         allow(@underlying_git_repo).to receive(:has_unmerged_files?).and_return(true)
       end
 
@@ -343,7 +343,7 @@ describe Nabokov::GitRepo do
 
   describe "unmerged_files" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url)
     end
 
     context "when git repo has not been initialized yet" do
@@ -355,7 +355,7 @@ describe Nabokov::GitRepo do
     context "when git repo is initialized" do
       before do
         @underlying_git_repo = object_double(Git.init('spec/fixtures/test_git_repo_has_changes'))
-        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url, @underlying_git_repo)
       end
 
       context "when git repo has unfinished merge" do
@@ -384,9 +384,33 @@ describe Nabokov::GitRepo do
     end
   end
 
+  describe "current_branch" do
+    before do
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url)
+    end
+
+    context "when git repo has not been initialized yet" do
+      it "raises an error" do
+        expect { @git_repo.current_branch }.to raise_error("'git' is not initialized yet, please call either 'clone' or 'init' before getting the current branch")
+      end
+    end
+
+    context "when git repo is initialized" do
+      before do
+        @underlying_git_repo = Git.init('spec/fixtures/test_git_repo_has_changes')
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url, @underlying_git_repo)
+      end
+
+      it "returns the current branch name" do
+        allow(@underlying_git_repo).to receive(:current_branch).and_return("develop")
+        expect(@git_repo.current_branch).to eql("develop")
+      end
+    end
+  end
+
   describe "log" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url)
     end
 
     context "when git repo has not been initialized yet" do
@@ -398,7 +422,7 @@ describe Nabokov::GitRepo do
     context "when git repo is initialized" do
       before do
         @underlying_git_repo = Git.init('spec/fixtures/test_git_repo_has_changes')
-        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url, @underlying_git_repo)
       end
 
       it "returns last n commit shas" do
@@ -423,7 +447,7 @@ describe Nabokov::GitRepo do
 
   describe "reset_to_commit" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url)
     end
 
     context "when git repo has not been initialized yet" do
@@ -435,7 +459,7 @@ describe Nabokov::GitRepo do
     context "when git repo is initialized" do
       before do
         @underlying_git_repo = Git.init('spec/fixtures/test_git_repo_has_changes')
-        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url, @underlying_git_repo)
       end
 
       context "when commit sha is not provided" do
@@ -464,7 +488,7 @@ describe Nabokov::GitRepo do
 
   describe "has_changes?" do
     before do
-      @git_repo = Nabokov::GitRepo.new(@remote_url, "spec/fixtures/test_git_repo_has_changes")
+      @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url)
     end
 
     context "when git repo has not been initialized yet" do
@@ -476,7 +500,7 @@ describe Nabokov::GitRepo do
     context "when git repo is initialized" do
       before do
         @underlying_git_repo = Git.init('spec/fixtures/test_git_repo_has_changes')
-        @git_repo = Nabokov::GitRepo.new('https://github.com/Antondomashnev/nabokov_example.git', "spec/fixtures/test_git_repo_has_changes", @underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_repo_has_changes", @remote_url, @underlying_git_repo)
         allow_any_instance_of(Git::Status).to receive(:construct_status) do end
       end
 

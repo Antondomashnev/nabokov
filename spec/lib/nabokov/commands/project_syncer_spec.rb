@@ -24,11 +24,11 @@ describe Nabokov::ProjectSyncer do
         @mock_nabokovfile = Nabokov::Nabokovfile.new("spec/fixtures/test_project_syncer/project_repo/nabokovfile.yaml")
         allow(@mock_nabokovfile).to receive(:localizations_repo_local_path).and_return(@test_localizations_repo_path)
 
-        @mock_localizations_repo = Nabokov::GitRepo.new(@mock_nabokovfile.localizations_repo_url, @mock_nabokovfile.localizations_repo_local_path)
+        @mock_localizations_repo = Nabokov::GitRepo.new(@mock_nabokovfile.localizations_repo_local_path, @mock_nabokovfile.localizations_repo_url)
         allow(@mock_localizations_repo).to receive(:pull)
 
         allow(Nabokov::Nabokovfile).to receive(:new).with("spec/fixtures/test_project_syncer/project_repo/nabokovfile.yaml").and_return(@mock_nabokovfile)
-        allow(Nabokov::GitRepo).to receive(:new).with(@mock_nabokovfile.localizations_repo_url, @mock_nabokovfile.localizations_repo_local_path).and_return(@mock_localizations_repo)
+        allow(Nabokov::GitRepo).to receive(:new).with(@mock_nabokovfile.localizations_repo_local_path, @mock_nabokovfile.localizations_repo_url).and_return(@mock_localizations_repo)
       end
 
       after do

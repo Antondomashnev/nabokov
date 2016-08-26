@@ -42,7 +42,7 @@ module Nabokov
     end
 
     def init_git_repo
-      @git_repo = GitRepo.new(@nabokovfile.localizations_repo_url, @nabokovfile.localizations_repo_local_path)
+      @git_repo = GitRepo.new(@nabokovfile.localizations_repo_local_path, @nabokovfile.localizations_repo_url)
       if Dir.exists?(@git_repo.local_path)
         ui.inform("Found existed repo at #{@git_repo.local_path}...")
         @git_repo.init
