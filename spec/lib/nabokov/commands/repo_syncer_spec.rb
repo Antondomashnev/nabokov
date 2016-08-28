@@ -15,7 +15,7 @@ describe Nabokov::RepoSyncer do
   describe "run" do
     context "when the repo is empty" do
       before(:all) do
-        @test_git_repo_path = "spec/fixtures/test_repo_syncer"
+        @test_git_repo_path = File.expand_path("spec/fixtures/test_repo_syncer")
         @test_git_repo_url = "https://github.com/Antondomashnev/nabokov_example.git"
       end
 

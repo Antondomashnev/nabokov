@@ -10,10 +10,11 @@ module Nabokov
 
     def initialize(local_path, remote_url = nil, git_repo = nil)
       raise "local_path is a required parameter" if local_path.nil?
-      @local_pathname = Pathname.new(local_path)
+      expanded_local_path = File.expand_path(local_path)
+      @local_pathname = Pathname.new(expanded_local_path)
       @git_repo = git_repo
       self.remote_url = remote_url
-      self.local_path = local_path
+      self.local_path = expanded_local_path
     end
 
     def clone

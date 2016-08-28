@@ -15,7 +15,7 @@ describe Nabokov::GitRepo do
 
     it "stores local path after initialization" do
       git_repo = Nabokov::GitRepo.new("spec/fixtures/bla", @remote_url)
-      expect(git_repo.local_path).to eql("spec/fixtures/bla")
+      expect(git_repo.local_path).to eql(File.expand_path("spec/fixtures/bla"))
     end
   end
 
@@ -27,7 +27,7 @@ describe Nabokov::GitRepo do
       end
 
       it "raises an error to use init method instead" do
-        expect { @git_repo.clone }.to raise_error("Git repo has been already cloned at 'spec/fixtures/test_git_repo_add', please use 'init' instead")
+        expect { @git_repo.clone }.to raise_error("Git repo has been already cloned at '#{File.expand_path("spec/fixtures/test_git_repo_add")}', please use 'init' instead")
       end
     end
 
@@ -36,21 +36,23 @@ describe Nabokov::GitRepo do
         @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_clone", @remote_url)
       end
 
+      after do
+        FileUtils.rm_rf(Dir.glob("spec/fixtures/test_git_clone"))
+      end
+
       it "clones the repo from the correct remote" do
-        allow(Git).to receive(:clone).with(anything, anything, @remote_url)
+        allow(Git).to receive(:clone).with(@remote_url, anything, anything)
         @git_repo.clone
       end
 
       it "clones the repo with the correct localname" do
         allow(Git).to receive(:clone).with(anything, "test_git_clone", anything)
         @git_repo.clone
-        FileUtils.rm_rf(Dir.glob("spec/fixtures/test_git_clone"))
       end
 
       it "clones the repo with the correct local directory path" do
-        allow(Git).to receive(:clone).with(anything, anything, {path: "spec/fixtures"})
+        allow(Git).to receive(:clone).with(anything, anything, { path: File.expand_path("spec/fixtures") })
         @git_repo.clone
-        FileUtils.rm_rf(Dir.glob("spec/fixtures/test_git_clone"))
       end
     end
 

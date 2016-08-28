@@ -3,7 +3,7 @@ require 'fileutils'
 
 describe Nabokov::ProjectSyncer do
   before(:each) do
-    # allow(STDOUT).to receive(:puts)
+    allow(STDOUT).to receive(:puts)
   end
 
   it 'is not an abstract command' do
@@ -27,8 +27,11 @@ describe Nabokov::ProjectSyncer do
         @mock_localizations_repo = Nabokov::GitRepo.new(@mock_nabokovfile.localizations_repo_local_path, @mock_nabokovfile.localizations_repo_url)
         allow(@mock_localizations_repo).to receive(:pull)
 
+        @mock_project_repo = Nabokov::GitRepo.new(@mock_nabokovfile.project_local_path)
+
         allow(Nabokov::Nabokovfile).to receive(:new).with("spec/fixtures/test_project_syncer/project_repo/nabokovfile.yaml").and_return(@mock_nabokovfile)
         allow(Nabokov::GitRepo).to receive(:new).with(@mock_nabokovfile.localizations_repo_local_path, @mock_nabokovfile.localizations_repo_url).and_return(@mock_localizations_repo)
+        allow(Nabokov::GitRepo).to receive(:new).with(@mock_nabokovfile.project_local_path).and_return(@mock_project_repo)
       end
 
       after do
