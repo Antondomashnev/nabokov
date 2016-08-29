@@ -168,18 +168,26 @@ describe Nabokov::GitRepo do
       end
 
       context "when branch name parameter is passed" do
-        it "creates a branch with the given name" do
-          git_branch = object_double(Git::Branch.new('temp_branch', 'temp_branch'))
-          allow(git_branch).to receive(:checkout)
-          expect(@underlying_git_repo).to receive(:branch).with("temp_branch").and_return(git_branch)
-          @git_repo.checkout_branch("temp_branch")
+        context "when branch exists" do
+          before do
+            allow(@underlying_git_repo).to receive(:is_branch?).with("temp_branch").and_return(true)
+          end
+
+          it "checkouts the given branch" do
+            expect(@underlying_git_repo).to receive(:checkout).with("temp_branch")
+            @git_repo.checkout_branch("temp_branch")
+          end
         end
 
-        it "checkouts the given branch" do
-          git_branch = object_double(Git::Branch.new('temp_branch', 'temp_branch'))
-          allow(@underlying_git_repo).to receive(:branch).with(anything).and_return(git_branch)
-          expect(git_branch).to receive(:checkout)
-          @git_repo.checkout_branch("temp_branch")
+        context "when branch doesn't exist" do
+          before do
+            allow(@underlying_git_repo).to receive(:is_branch?).with("temp_branch").and_return(false)
+          end
+
+          it "checkouts a new branch" do
+            expect(@underlying_git_repo).to receive(:checkout).with("temp_branch", { :new_branch => true })
+            @git_repo.checkout_branch("temp_branch")
+          end
         end
       end
 

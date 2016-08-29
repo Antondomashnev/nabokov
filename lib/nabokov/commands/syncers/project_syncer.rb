@@ -55,7 +55,7 @@ module Nabokov
     end
 
     def checkout_project_repo_original_branch
-      ui.say("Checkout porject repo #{@project_repo_original_branch} branch...")
+      ui.say("Checkout project repo #{@project_repo_original_branch} branch...")
       @project_git_repo.checkout_branch(@project_repo_original_branch)
     end
 

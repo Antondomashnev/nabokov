@@ -52,7 +52,11 @@ module Nabokov
     def checkout_branch(name)
       raise "'git' is not initialized yet, please call either 'clone' or 'init' before checkouting any branch" if @git_repo.nil?
       raise "branch name could not be nil or zero length" if name.nil? || name.length == 0
-      @git_repo.branch(name).checkout
+      if @git_repo.is_branch?(name)
+        @git_repo.checkout(name)
+      else
+        @git_repo.checkout(name, { :new_branch => true })
+      end
     end
 
     def delete_branch(name)
