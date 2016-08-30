@@ -1,0 +1,93 @@
+require 'nabokov/commands/syncers/syncer'
+require 'nabokov/core/file_manager'
+require 'nabokov/helpers/merger'
+require 'nabokov/models/strings_file'
+
+module Nabokov
+  class ProjectSyncer < Syncer
+
+    self.abstract_command = false
+    self.summary = 'Sync local localization strings with the remote localizations repo.'
+
+    def initialize(argv)
+      super
+    end
+
+    def validate!
+      super
+    end
+
+    def self.options
+      super
+    end
+
+    def run
+      super
+      fetch_localization_repo_master_branch_changes
+      init_project_git_repo
+      checkout_project_repo_temporary_branch
+      has_changes = update_localization_files_in_project_repo
+      checkout_project_repo_original_branch
+      if has_changes
+        merge_project_repo_original_branch_with_temporary
+      end
+      delete_temporary_branch
+    end
+
+    private
+
+    def init_project_git_repo
+      @project_git_repo = GitRepo.new(@nabokovfile.project_local_path)
+      raise "Could not find the project repo at '#{Dir.exists?(@project_git_repo.local_path)}'" unless Dir.exists?(@project_git_repo.local_path)
+      ui.inform("Found existed project repo at #{@project_git_repo.local_path}...")
+      @project_git_repo.init
+      @project_repo_original_branch = @project_git_repo.current_branch
+    end
+
+    def merge_project_repo_original_branch_with_temporary
+      merger = Merger.new(ui, @project_git_repo)
+      merger.merge(@project_repo_original_branch, temporary_branch)
+    end
+
+    def checkout_project_repo_temporary_branch
+      ui.say("Checkout porject repo temporary branch...")
+      @project_git_repo.checkout_branch(temporary_branch)
+    end
+
+    def checkout_project_repo_original_branch
+      ui.say("Checkout project repo #{@project_repo_original_branch} branch...")
+      @project_git_repo.checkout_branch(@project_repo_original_branch)
+    end
+
+    def update_localization_files_in_project_repo
+      has_changes = false
+      self.nabokovfile.project_localization_file_paths.each do |localization_file_name, localization_file_path|
+        localization_file_path_in_localization_repo = "#{self.git_repo.local_path}/#{localization_file_name.to_s}.#{Nabokov::StringsFile.extension}"
+        ui.say("Copying strings file from '#{localization_file_path_in_localization_repo}' to the project repo...")
+        new_file_path = FileManager.copy(localization_file_path_in_localization_repo, localization_file_path)
+        @project_git_repo.add(new_file_path)
+        if @project_git_repo.has_changes?
+          @project_git_repo.commit("Nabokov has updated localization file '#{localization_file_name}'...")
+          has_changes = true
+        else
+          ui.say("'#{localization_file_name}' file doesn't have any changes to commit...")
+        end
+      end
+      has_changes
+    end
+
+    def fetch_localization_repo_master_branch_changes
+      ui.say("Fetching localization repo remote master branch changes...")
+      self.git_repo.pull
+    end
+
+    def delete_temporary_branch
+      ui.say("Deleting temporary branch...")
+      @project_git_repo.delete_branch(temporary_branch)
+    end
+
+    def temporary_branch
+      "nabokov/temporary_branch"
+    end
+  end
+end

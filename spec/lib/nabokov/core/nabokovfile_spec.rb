@@ -22,12 +22,16 @@ describe Nabokov::Nabokovfile do
       expect(@nabokovfile.localizations_repo_url).to eql("https://github.com/Antondomashnev/nabokov_example.git")
     end
 
-    it "assigns the localization_file_paths value" do
-      expect(@nabokovfile.localization_file_paths) == {"en" => "spec/fixtures/en.stirngs", "de" => "spec/fixtures/de.strings"}
+    it "assigns the project_localization_file_paths value" do
+      expect(@nabokovfile.project_localization_file_paths) == {"en" => "spec/fixtures/en.stirngs", "de" => "spec/fixtures/de.strings"}
     end
 
     it "assigns the localization_local_path value" do
-      expect(@nabokovfile.localizations_local_path).to eql("#{Dir.home}/.nabokov/antondomashnev/nabokov_example")
+      expect(@nabokovfile.localizations_repo_local_path).to eql("#{Dir.home}/.nabokov/antondomashnev/nabokov_example")
+    end
+
+    it "assigns the project_local_path value" do
+      expect(@nabokovfile.project_local_path).to eql("spec/fixtures/local_project")
     end
 
     context "when the master_branch key is presented" do

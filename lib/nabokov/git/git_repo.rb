@@ -8,13 +8,13 @@ module Nabokov
 
     attr_accessor :remote_url, :local_path
 
-    def initialize(remote_url, local_path, git_repo = nil)
-      raise "remote_url is a required parameter" if remote_url.nil?
+    def initialize(local_path, remote_url = nil, git_repo = nil)
       raise "local_path is a required parameter" if local_path.nil?
-      @local_pathname = Pathname.new(local_path)
+      expanded_local_path = File.expand_path(local_path)
+      @local_pathname = Pathname.new(expanded_local_path)
       @git_repo = git_repo
       self.remote_url = remote_url
-      self.local_path = local_path
+      self.local_path = expanded_local_path
     end
 
     def clone
@@ -52,7 +52,11 @@ module Nabokov
     def checkout_branch(name)
       raise "'git' is not initialized yet, please call either 'clone' or 'init' before checkouting any branch" if @git_repo.nil?
       raise "branch name could not be nil or zero length" if name.nil? || name.length == 0
-      @git_repo.branch(name).checkout
+      if @git_repo.is_branch?(name)
+        @git_repo.checkout(name)
+      else
+        @git_repo.checkout(name, { :new_branch => true })
+      end
     end
 
     def delete_branch(name)
@@ -79,6 +83,11 @@ module Nabokov
     def has_unfinished_merge?
       raise "'git' is not initialized yet, please call either 'clone' or 'init' before checking if the git repo has unfinished merge" if @git_repo.nil?
       return @git_repo.has_unmerged_files?
+    end
+
+    def current_branch
+      raise "'git' is not initialized yet, please call either 'clone' or 'init' before getting the current branch" if @git_repo.nil?
+      return @git_repo.current_branch
     end
 
     def abort_merge

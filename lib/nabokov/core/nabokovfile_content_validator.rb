@@ -11,27 +11,33 @@ module Nabokov
     end
 
     def validate
-      validate_git_repo
-      validate_localizations
+      validate_localizations_repo
+      validate_project_repo
     end
 
     private
 
-    def validate_git_repo
-      git_repo = self.nabokovfile_hash[NabokovfileKeyes.localizations_repo]
-      raise "Localizations repo must be a type of Hash" unless git_repo.is_a?(Hash)
+    def validate_localizations_repo
+      localizations_repo = self.nabokovfile_hash[NabokovfileKeyes.localizations_repo]
+      raise "Localizations repo must be a type of Hash" unless localizations_repo.is_a?(Hash)
 
-      url = git_repo[NabokovfileKeyes.localizations_repo_url]
+      url = localizations_repo[NabokovfileKeyes.localizations_repo_url]
       raise "'#{url}' is not a valid URL" unless url =~ URI::regexp()
       raise "Please use 'https://...' instead of '#{url}' only supports encrypted requests" unless url.start_with?("https://")
     end
 
-    def validate_localizations
-      localizations_key = NabokovfileKeyes.localization_file_paths
-      localizations = self.nabokovfile_hash[localizations_key]
-      raise "Localizations must be a type of Hash" unless localizations.is_a?(Hash)
+    def validate_project_repo
+      project_repo = self.nabokovfile_hash[NabokovfileKeyes.project_repo]
+      raise "Project repo must be a type of Hash" unless project_repo.is_a?(Hash)
 
+      localizations_key = NabokovfileKeyes.project_localization_file_paths
+      localizations = project_repo[localizations_key]
+      raise "Localizations must be a type of Hash" unless localizations.is_a?(Hash)
       localizations.each_value { |path| raise "Couldn't find strings file at '#{path}'" unless File.exist?(path) }
+
+      project_local_path_key = NabokovfileKeyes.project_local_path
+      project_local_path = project_repo[project_local_path_key]
+      raise "Project repo local path must be presented" if project_local_path.nil?
     end
 
   end

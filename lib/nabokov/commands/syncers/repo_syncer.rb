@@ -41,8 +41,8 @@ module Nabokov
 
     def update_localization_files
       has_changes = false
-      self.nabokovfile.localization_file_paths.each do |localization_file_name, localization_file_path|
-        ui.say("Copying strings file from '#{localization_file_path}' to the repo...")
+      self.nabokovfile.project_localization_file_paths.each do |localization_file_name, localization_file_path|
+        ui.say("Copying strings file from '#{localization_file_path}' to the localization repo...")
         new_file_path = FileManager.copy_and_rename(localization_file_path, self.git_repo.local_path, localization_file_name.to_s)
         self.git_repo.add(new_file_path)
         if self.git_repo.has_changes?
@@ -62,12 +62,12 @@ module Nabokov
     end
 
     def fetch_master_branch_changes
-      ui.say("Fetching remote master branch changes…")
+      ui.say("Fetching remote master branch changes...")
       self.git_repo.pull
     end
 
     def delete_temporary_branch
-      ui.say("Deleting temporary branch…")
+      ui.say("Deleting temporary branch...")
       self.git_repo.delete_branch(temporary_branch)
     end
 

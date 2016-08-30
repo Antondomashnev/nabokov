@@ -15,19 +15,19 @@ describe Nabokov::RepoSyncer do
   describe "run" do
     context "when the repo is empty" do
       before(:all) do
-        @test_git_repo_path = "spec/fixtures/test_repo_syncer"
+        @test_git_repo_path = File.expand_path("spec/fixtures/test_repo_syncer")
         @test_git_repo_url = "https://github.com/Antondomashnev/nabokov_example.git"
       end
 
       before(:each) do
-        FileUtils.cp_r("spec/fixtures/test_repo_template", @test_git_repo_path)
+        FileUtils.cp_r("spec/fixtures/test_localizations_repo_syncer/localizations_repo_template", @test_git_repo_path)
 
         @nabokovfile = Nabokov::Nabokovfile.new("spec/fixtures/nabokovfile_example_without_master_branch.yaml")
-        allow(@nabokovfile).to receive(:localizations_local_path).and_return(@test_git_repo_path)
+        allow(@nabokovfile).to receive(:localizations_repo_local_path).and_return(@test_git_repo_path)
         allow(Nabokov::Nabokovfile).to receive(:new).with(anything).and_return(@nabokovfile)
 
         underlying_git_repo = object_double(Git::Base)
-        @git_repo = Nabokov::GitRepo.new(@test_git_repo_url, @test_git_repo_path, underlying_git_repo)
+        @git_repo = Nabokov::GitRepo.new(@test_git_repo_path, @test_git_repo_url, underlying_git_repo)
         allow(Nabokov::GitRepo).to receive(:new).with(anything, anything).and_return(@git_repo)
         allow(@git_repo).to receive(:log).with(1).and_return("1234567890")
 

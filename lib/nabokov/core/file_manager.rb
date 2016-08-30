@@ -3,6 +3,11 @@ require 'pathname'
 
 module Nabokov
   class FileManager
+    def self.copy(original_file_path, destination_file_path)
+      raise "Couldn't find file at '#{original_file_path}'" unless File.exist?(original_file_path)
+      FileUtils.cp(original_file_path, destination_file_path)
+      File.expand_path(destination_file_path)
+    end
 
     def self.copy_and_rename(original_file_path, to_directory, new_name)
       raise "Couldn't find file at '#{original_file_path}'" unless File.exist?(original_file_path)
@@ -15,13 +20,12 @@ module Nabokov
       new_file_pathname = Pathname.new(to_directory) + Pathname.new(new_name + original_file_extension)
       new_file_path = new_file_pathname.to_s
       FileUtils.cp(original_file_path, new_file_path)
-      new_file_path
+      File.expand_path(new_file_path)
     end
 
     def self.remove(path)
       raise "Can not file neither file nor directory at '#{path}'" unless (File.exist?(path) or Dir.exist?(path))
       FileUtils.rm_rf(path)
     end
-
   end
 end
