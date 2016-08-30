@@ -18,17 +18,18 @@ describe Nabokov::ProjectSyncer do
       end
 
       before(:each) do
-        FileUtils.mkdir(@test_localizations_repo_path)
-        localizations_repo = Git.init(@test_localizations_repo_path)
-        FileUtils.cp_r("spec/fixtures/test_project_syncer/localizations_repo_fixtures/.", @test_localizations_repo_path)
-        localizations_repo.add()
-        localizations_repo.commit("initial commit")
+        prepare_repo = proc do |repo_path, fixtures_path|
+          FileUtils.mkdir(repo_path)
+          repo = Git.init(repo_path)
+          repo.config('user.name', 'nabokov')
+          repo.config('user.email', 'nabokov@nabokov.com')
+          FileUtils.cp_r(fixtures_path, repo_path)
+          repo.add()
+          repo.commit("initial commit")
+        end
 
-        FileUtils.mkdir(@test_project_repo_path)
-        project_repo = Git.init(@test_project_repo_path)
-        FileUtils.cp_r("spec/fixtures/test_project_syncer/project_repo_fixtures/.", @test_project_repo_path)
-        project_repo.add()
-        project_repo.commit("initial commit")
+        prepare_repo.call(@test_localizations_repo_path, "spec/fixtures/test_project_syncer/localizations_repo_fixtures/.")
+        prepare_repo.call(@test_project_repo_path, "spec/fixtures/test_project_syncer/project_repo_fixtures/.")
 
         @mock_nabokovfile = Nabokov::Nabokovfile.new("spec/fixtures/test_project_syncer/project_repo/nabokovfile.yaml")
         allow(@mock_nabokovfile).to receive(:localizations_repo_local_path).and_return(@test_localizations_repo_path)
