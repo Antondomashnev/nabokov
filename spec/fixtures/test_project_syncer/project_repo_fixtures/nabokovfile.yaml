@@ -1,0 +1,9 @@
+localizations_repo:
+  url: 'https://github.com/Antondomashnev/nabokov_example.git'
+  master_branch: 'master'
+
+project_repo:
+  localizations:
+    :en: 'spec/fixtures/test_project_syncer/project_repo/en.strings'
+    :de: 'spec/fixtures/test_project_syncer/project_repo/de.strings'
+  local_path: 'spec/fixtures/test_project_syncer/project_repo'

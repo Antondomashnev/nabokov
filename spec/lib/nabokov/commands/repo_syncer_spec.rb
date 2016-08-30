@@ -20,7 +20,7 @@ describe Nabokov::RepoSyncer do
       end
 
       before(:each) do
-        FileUtils.cp_r("spec/fixtures/test_repo_template", @test_git_repo_path)
+        FileUtils.cp_r("spec/fixtures/test_localizations_repo_syncer/localizations_repo_template", @test_git_repo_path)
 
         @nabokovfile = Nabokov::Nabokovfile.new("spec/fixtures/nabokovfile_example_without_master_branch.yaml")
         allow(@nabokovfile).to receive(:localizations_repo_local_path).and_return(@test_git_repo_path)

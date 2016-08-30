@@ -18,8 +18,17 @@ describe Nabokov::ProjectSyncer do
       end
 
       before(:each) do
-        FileUtils.cp_r("spec/fixtures/test_project_syncer/localizations_repo_template", @test_localizations_repo_path)
-        FileUtils.cp_r("spec/fixtures/test_project_syncer/project_repo_template", @test_project_repo_path)
+        FileUtils.mkdir(@test_localizations_repo_path)
+        localizations_repo = Git.init(@test_localizations_repo_path)
+        FileUtils.cp_r("spec/fixtures/test_project_syncer/localizations_repo_fixtures/.", @test_localizations_repo_path)
+        localizations_repo.add()
+        localizations_repo.commit("initial commit")
+
+        FileUtils.mkdir(@test_project_repo_path)
+        project_repo = Git.init(@test_project_repo_path)
+        FileUtils.cp_r("spec/fixtures/test_project_syncer/project_repo_fixtures/.", @test_project_repo_path)
+        project_repo.add()
+        project_repo.commit("initial commit")
 
         @mock_nabokovfile = Nabokov::Nabokovfile.new("spec/fixtures/test_project_syncer/project_repo/nabokovfile.yaml")
         allow(@mock_nabokovfile).to receive(:localizations_repo_local_path).and_return(@test_localizations_repo_path)
