@@ -34,10 +34,6 @@ describe Nabokov::GitRepo do
         @git_repo = Nabokov::GitRepo.new("spec/fixtures/test_git_clone", @remote_url)
       end
 
-      after do
-        FileUtils.rm_rf(Dir.glob("spec/fixtures/test_git_clone"))
-      end
-
       it "clones the repo from the correct remote" do
         allow(Git).to receive(:clone).with(@remote_url, anything, anything)
         @git_repo.clone
