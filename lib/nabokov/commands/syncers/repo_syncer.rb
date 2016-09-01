@@ -1,12 +1,11 @@
-require 'nabokov/commands/syncers/syncer'
-require 'nabokov/core/file_manager'
-require 'nabokov/helpers/merger'
+require "nabokov/commands/syncers/syncer"
+require "nabokov/core/file_manager"
+require "nabokov/helpers/merger"
 
 module Nabokov
   class RepoSyncer < Syncer
-
     self.abstract_command = false
-    self.summary = 'Sync remote localizations repo with the local localization strings.'
+    self.summary = "Sync remote localizations repo with the local localization strings."
 
     def initialize(argv)
       super
@@ -45,7 +44,7 @@ module Nabokov
         ui.say("Copying strings file from '#{localization_file_path}' to the localization repo...")
         new_file_path = FileManager.copy_and_rename(localization_file_path, self.git_repo.local_path, localization_file_name.to_s)
         self.git_repo.add(new_file_path)
-        if self.git_repo.has_changes?
+        if self.git_repo.changes?
           self.git_repo.commit("Nabokov localization file '#{localization_file_name}' update...")
           has_changes = true
         else

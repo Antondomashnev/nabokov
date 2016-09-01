@@ -1,12 +1,12 @@
-require 'nabokov/commands/syncers/project_syncer'
-require 'fileutils'
+require "nabokov/commands/syncers/project_syncer"
+require "fileutils"
 
 describe Nabokov::ProjectSyncer do
   before(:each) do
     allow(STDOUT).to receive(:puts)
   end
 
-  it 'is not an abstract command' do
+  it "is not an abstract command" do
     expect(Nabokov::ProjectSyncer.abstract_command).to be_falsy
   end
 
@@ -21,10 +21,10 @@ describe Nabokov::ProjectSyncer do
         prepare_repo = proc do |repo_path, fixtures_path|
           FileUtils.mkdir(repo_path)
           repo = Git.init(repo_path)
-          repo.config('user.name', 'nabokov')
-          repo.config('user.email', 'nabokov@nabokov.com')
+          repo.config("user.name", "nabokov")
+          repo.config("user.email", "nabokov@nabokov.com")
           FileUtils.cp_r(fixtures_path, repo_path)
-          repo.add()
+          repo.add
           repo.commit("initial commit")
         end
 
@@ -50,7 +50,7 @@ describe Nabokov::ProjectSyncer do
       end
 
       it "should merge remote localizations with project's localization" do
-        Nabokov::ProjectSyncer.run(['--nabokovfile=spec/fixtures/test_project_syncer/project_repo/nabokovfile.yaml'])
+        Nabokov::ProjectSyncer.run(["--nabokovfile=spec/fixtures/test_project_syncer/project_repo/nabokovfile.yaml"])
 
         expected_en_localization_strings = ["\"hello\" = \"Hello\";\n", "\"bye\" = \"Bye\";\n"]
         actual_en_localization_strings = []

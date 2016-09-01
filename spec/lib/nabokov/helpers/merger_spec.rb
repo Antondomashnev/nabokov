@@ -1,5 +1,5 @@
-require 'nabokov/helpers/merger'
-require 'git'
+require "nabokov/helpers/merger"
+require "git"
 
 describe Nabokov::Merger do
   describe "initialize" do
@@ -35,7 +35,7 @@ describe Nabokov::Merger do
 
     context "when there are conflicts" do
       before do
-        allow(@git_repo).to receive(:has_changes?)
+        allow(@git_repo).to receive(:changes?)
         allow(@git_repo).to receive(:merge_branches).with("master", "synchronization").and_raise(Git::GitExecuteError.new("conflicts!!!"))
         allow(@informator).to receive(:error).with(anything)
         allow(@informator).to receive(:ask_with_answers).with(anything, anything)
@@ -68,7 +68,7 @@ describe Nabokov::Merger do
         end
 
         it "resets the HEAD to last commit" do
-          expect(@git_repo).to receive(:reset_to_commit).with("1234567890", { :hard => true })
+          expect(@git_repo).to receive(:reset_to_commit).with("1234567890", { hard: true })
           @merger.merge("master", "synchronization")
         end
       end
@@ -82,7 +82,7 @@ describe Nabokov::Merger do
           allow(@git_repo).to receive(:unmerged_files).and_return(["file1.txt", "file2.txt"])
           allow(@git_repo).to receive(:add).with(anything)
           allow(@git_repo).to receive(:commit).with(anything)
-          allow(@git_repo).to receive(:has_changes?).and_return(true)
+          allow(@git_repo).to receive(:changes?).and_return(true)
         end
 
         it "succeeds" do

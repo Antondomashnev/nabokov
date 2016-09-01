@@ -1,5 +1,5 @@
-require 'fileutils'
-require 'pathname'
+require "fileutils"
+require "pathname"
 
 module Nabokov
   class FileManager
@@ -12,7 +12,7 @@ module Nabokov
     def self.copy_and_rename(original_file_path, to_directory, new_name)
       raise "Couldn't find file at '#{original_file_path}'" unless File.exist?(original_file_path)
       raise "Couldn't find directory at '#{to_directory}'" unless Dir.exist?(to_directory)
-      raise "New name of the file could not be empty" unless new_name.length > 0
+      raise "New name of the file could not be empty" if new_name.empty?
       raise "New name of the file '#{new_name}' contains invalid character '.'" if new_name.include?(".")
 
       original_file_pathname = Pathname.new(original_file_path)
@@ -24,7 +24,7 @@ module Nabokov
     end
 
     def self.remove(path)
-      raise "Can not file neither file nor directory at '#{path}'" unless (File.exist?(path) or Dir.exist?(path))
+      raise "Can not file neither file nor directory at '#{path}'" unless File.exist?(path) or Dir.exist?(path)
       FileUtils.rm_rf(path)
     end
   end
