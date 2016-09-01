@@ -1,7 +1,7 @@
 # This class is heavily based on the Interviewer class from the Danger gem
 # The original link is https://github.com/danger/danger/blob/master/lib/danger/commands/init_helpers/interviewer.rb
 
-require 'cork'
+require "cork"
 
 module Nabokov
   class Informator

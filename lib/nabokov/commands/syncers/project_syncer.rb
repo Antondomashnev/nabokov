@@ -1,13 +1,12 @@
-require 'nabokov/commands/syncers/syncer'
-require 'nabokov/core/file_manager'
-require 'nabokov/helpers/merger'
-require 'nabokov/models/strings_file'
+require "nabokov/commands/syncers/syncer"
+require "nabokov/core/file_manager"
+require "nabokov/helpers/merger"
+require "nabokov/models/strings_file"
 
 module Nabokov
   class ProjectSyncer < Syncer
-
     self.abstract_command = false
-    self.summary = 'Sync local localization strings with the remote localizations repo.'
+    self.summary = "Sync local localization strings with the remote localizations repo."
 
     def initialize(argv)
       super
@@ -38,7 +37,7 @@ module Nabokov
 
     def init_project_git_repo
       @project_git_repo = GitRepo.new(@nabokovfile.project_local_path)
-      raise "Could not find the project repo at '#{Dir.exists?(@project_git_repo.local_path)}'" unless Dir.exists?(@project_git_repo.local_path)
+      raise "Could not find the project repo at '#{Dir.exist?(@project_git_repo.local_path)}'" unless Dir.exist?(@project_git_repo.local_path)
       ui.inform("Found existed project repo at #{@project_git_repo.local_path}...")
       @project_git_repo.init
       @project_repo_original_branch = @project_git_repo.current_branch
@@ -62,11 +61,11 @@ module Nabokov
     def update_localization_files_in_project_repo
       has_changes = false
       self.nabokovfile.project_localization_file_paths.each do |localization_file_name, localization_file_path|
-        localization_file_path_in_localization_repo = "#{self.git_repo.local_path}/#{localization_file_name.to_s}.#{Nabokov::StringsFile.extension}"
+        localization_file_path_in_localization_repo = "#{self.git_repo.local_path}/#{localization_file_name}.#{Nabokov::StringsFile.extension}"
         ui.say("Copying strings file from '#{localization_file_path_in_localization_repo}' to the project repo...")
         new_file_path = FileManager.copy(localization_file_path_in_localization_repo, localization_file_path)
         @project_git_repo.add(new_file_path)
-        if @project_git_repo.has_changes?
+        if @project_git_repo.changes?
           @project_git_repo.commit("Nabokov has updated localization file '#{localization_file_name}'...")
           has_changes = true
         else

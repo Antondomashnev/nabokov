@@ -1,4 +1,4 @@
-require 'nabokov/core/nabokovfile_keys'
+require "nabokov/core/nabokovfile_keys"
 
 describe Nabokov::NabokovfileKeyes do
   it "has a valid localizations_repo key" do

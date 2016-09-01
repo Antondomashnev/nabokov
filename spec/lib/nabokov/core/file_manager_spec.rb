@@ -1,7 +1,6 @@
-require 'nabokov/core/file_manager'
+require "nabokov/core/file_manager"
 
 describe Nabokov::FileManager do
-
   describe "copy and rename" do
     after do
       FileUtils.rm_rf(Dir.glob("spec/fixtures/test_copy_folder/*"))
@@ -50,7 +49,7 @@ describe Nabokov::FileManager do
       it "overwrites the file according input parameters" do
         from_path = "spec/fixtures/de.strings"
         to_directory =
-        new_file_name = "fr"
+          new_file_name = "fr"
         time_before_copy = File.mtime("spec/fixtures/test_overwrite_folder/fr.strings")
         new_file_path = Nabokov::FileManager.copy_and_rename(from_path, "spec/fixtures/test_overwrite_folder", new_file_name)
         expect(File.mtime(new_file_path)).to be > time_before_copy

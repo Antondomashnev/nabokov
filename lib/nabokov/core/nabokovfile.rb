@@ -1,11 +1,10 @@
-require 'yaml'
-require 'uri'
-require 'nabokov/core/nabokovfile_keys'
-require 'nabokov/core/nabokovfile_content_validator'
+require "yaml"
+require "uri"
+require "nabokov/core/nabokovfile_keys"
+require "nabokov/core/nabokovfile_content_validator"
 
 module Nabokov
   class Nabokovfile
-
     attr_accessor :localizations_repo_url
     attr_accessor :localizations_repo_master_branch
     attr_accessor :localizations_repo_local_path
@@ -34,11 +33,9 @@ module Nabokov
     private
 
     def read_data_from_yaml_file(yaml_file, path)
-      begin
-        yaml_data = YAML.load(yaml_file)
-      rescue Exception => e
-        raise "File at '#{path}' doesn't have a legit YAML syntax"
-      end
+      YAML.load(yaml_file)
+    rescue Psych::SyntaxError
+      raise "File at '#{path}' doesn't have a legit YAML syntax"
     end
 
     def validate_content(content_hash)
@@ -56,16 +53,13 @@ module Nabokov
       self.localizations_repo_local_path = build_localization_local_path
     end
 
-    private
-
     def build_localization_local_path
       repo_url_path = URI(self.localizations_repo_url).path.to_s
       home_dir = Dir.home.to_s
-      repo_url_name_without_extension = File.basename(repo_url_path ,File.extname(repo_url_path)).downcase
+      repo_url_name_without_extension = File.basename(repo_url_path, File.extname(repo_url_path)).downcase
       repo_url_organization = File.dirname(repo_url_path).downcase
       nabokov_dir_name = "/.nabokov"
       home_dir + nabokov_dir_name + repo_url_organization + "/" + repo_url_name_without_extension
     end
-
   end
 end

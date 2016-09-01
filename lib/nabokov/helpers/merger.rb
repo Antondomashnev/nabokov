@@ -1,10 +1,10 @@
-require 'nabokov/git/git_repo'
-require 'nabokov/helpers/informator'
+require "nabokov/git/git_repo"
+require "nabokov/helpers/informator"
 
 module Nabokov
   class MergerResult
-    SUCCEEDED = "succeeded"
-    ABORTED = "aborted"
+    SUCCEEDED = "succeeded".freeze
+    ABORTED = "aborted".freeze
   end
 
   class Merger
@@ -17,12 +17,10 @@ module Nabokov
     end
 
     def merge(head, branch)
-      begin
-        @git_repo.merge_branches(head, branch)
-        MergerResult::SUCCEEDED
-      rescue Git::GitExecuteError => e
-        rescue_merge
-      end
+      @git_repo.merge_branches(head, branch)
+      MergerResult::SUCCEEDED
+    rescue Git::GitExecuteError
+      rescue_merge
     end
 
     private
@@ -39,7 +37,7 @@ module Nabokov
 
     def abort_merge
       @git_repo.abort_merge
-      @git_repo.reset_to_commit(@rescue_commit_sha, { :hard => true }) unless @rescue_commit_sha.nil?
+      @git_repo.reset_to_commit(@rescue_commit_sha, { hard: true }) unless @rescue_commit_sha.nil?
       MergerResult::ABORTED
     end
 
@@ -67,12 +65,12 @@ module Nabokov
         @git_repo.commit("Nabokov merge conflicts manually have been resolved...")
       end
 
-      unless @git_repo.has_changes?
+      if @git_repo.changes?
+        commit_merge.call
+      else
         ui.warn("Seems like you haven't resolved the merge, if you want to continue anyway please press return...")
         ui.wait_for_return
-        commit_merge.call if @git_repo.has_changes?
-      else
-        commit_merge.call
+        commit_merge.call if @git_repo.changes?
       end
     end
 

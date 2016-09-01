@@ -1,11 +1,10 @@
-require 'git'
-require 'uri'
-require 'securerandom'
-require 'pathname'
+require "git"
+require "uri"
+require "securerandom"
+require "pathname"
 
 module Nabokov
   class GitRepo
-
     attr_accessor :remote_url, :local_path
 
     def initialize(local_path, remote_url = nil, git_repo = nil)
@@ -19,7 +18,7 @@ module Nabokov
 
     def clone
       raise "Git repo has been already cloned at '#{self.local_path}', please use 'init' instead" if repo_exist_at_local_path
-      @git_repo ||= Git.clone(self.remote_url, @local_pathname.basename.to_s, :path => @local_pathname.parent.to_s)
+      @git_repo ||= Git.clone(self.remote_url, @local_pathname.basename.to_s, path: @local_pathname.parent.to_s)
     end
 
     def init
@@ -51,28 +50,28 @@ module Nabokov
 
     def checkout_branch(name)
       raise "'git' is not initialized yet, please call either 'clone' or 'init' before checkouting any branch" if @git_repo.nil?
-      raise "branch name could not be nil or zero length" if name.nil? || name.length == 0
+      raise "branch name could not be nil or zero length" if name.nil? || name.length.zero?
       if @git_repo.is_branch?(name)
         @git_repo.checkout(name)
       else
-        @git_repo.checkout(name, { :new_branch => true })
+        @git_repo.checkout(name, { new_branch: true })
       end
     end
 
     def delete_branch(name)
       raise "'git' is not initialized yet, please call either 'clone' or 'init' before deleting any branch" if @git_repo.nil?
-      raise "branch name could not be nil or zero length" if name.nil? || name.length == 0
+      raise "branch name could not be nil or zero length" if name.nil? || name.length.zero?
       @git_repo.branch(name).delete
     end
 
     def merge_branches(original_branch, branch_to_be_merged)
       raise "'git' is not initialized yet, please call either 'clone' or 'init' before merging any branches" if @git_repo.nil?
-      raise "original branch name could not be nil or zero length" if original_branch.nil? || original_branch.length == 0
-      raise "branch to be merged in name could not be nil or zero length" if branch_to_be_merged.nil? || branch_to_be_merged.length == 0
+      raise "original branch name could not be nil or zero length" if original_branch.nil? || original_branch.length.zero?
+      raise "branch to be merged in name could not be nil or zero length" if branch_to_be_merged.nil? || branch_to_be_merged.length.zero?
       @git_repo.branch(original_branch).merge(@git_repo.branch(branch_to_be_merged))
     end
 
-    def has_changes?
+    def changes?
       raise "'git' is not initialized yet, please call either 'clone' or 'init' before checking if the git repo has changes" if @git_repo.nil?
       return true if @git_repo.status.deleted.count > 0
       return true if @git_repo.status.added.count > 0
@@ -80,7 +79,7 @@ module Nabokov
       false
     end
 
-    def has_unfinished_merge?
+    def unfinished_merge?
       raise "'git' is not initialized yet, please call either 'clone' or 'init' before checking if the git repo has unfinished merge" if @git_repo.nil?
       return @git_repo.has_unmerged_files?
     end
@@ -92,7 +91,7 @@ module Nabokov
 
     def abort_merge
       raise "'git' is not initialized yet, please call either 'clone' or 'init' before aborting merge" if @git_repo.nil?
-      raise "nothing to abort - git repo doesn't have unfinished merge" unless self.has_unfinished_merge?
+      raise "nothing to abort - git repo doesn't have unfinished merge" unless self.unfinished_merge?
       @git_repo.abort_merge
     end
 
@@ -119,16 +118,13 @@ module Nabokov
     def log(number_of_commits)
       raise "'git' is not initialized yet, please call either 'clone' or 'init' before getting the log" if @git_repo.nil?
       commits = @git_repo.log(number_of_commits)
-      commits.map do |commit|
-        commit.sha
-      end
+      commits.map(&:sha)
     end
 
     private
 
     def repo_exist_at_local_path
-      Dir.exists?(self.local_path)
+      Dir.exist?(self.local_path)
     end
-
   end
 end

@@ -1,16 +1,15 @@
-require 'nabokov/commands/runner'
+require "nabokov/commands/runner"
 
 module Nabokov
   class Syncer < Runner
-
     attr_reader :nabokovfile
     attr_reader :git_repo
 
     self.abstract_command = true
-    self.summary = 'The abstract super class for all nabokov sync related commands.'
+    self.summary = "The abstract super class for all nabokov sync related commands."
 
     def initialize(argv)
-      nabokovfile = argv.option('nabokovfile')
+      nabokovfile = argv.option("nabokovfile")
       raise "--nabokovfile is a required parameter and could not be nil" if nabokovfile.nil?
 
       @nabokovfile_path = nabokovfile if File.exist?(nabokovfile)
@@ -26,7 +25,7 @@ module Nabokov
 
     def self.options
       [
-        ['--nabokovfile=<path/to/nabokovfile>', 'The location of your Nabokovfile']
+        ["--nabokovfile=<path/to/nabokovfile>", "The location of your Nabokovfile"]
       ].concat(super)
     end
 
@@ -43,7 +42,7 @@ module Nabokov
 
     def init_git_repo
       @git_repo = GitRepo.new(@nabokovfile.localizations_repo_local_path, @nabokovfile.localizations_repo_url)
-      if Dir.exists?(@git_repo.local_path)
+      if Dir.exist?(@git_repo.local_path)
         ui.inform("Found existed repo at #{@git_repo.local_path}...")
         @git_repo.init
       else
@@ -57,6 +56,5 @@ module Nabokov
       ui.inform("Checkout master branch...")
       @git_repo.checkout_branch(@nabokovfile.localizations_repo_master_branch)
     end
-
   end
 end

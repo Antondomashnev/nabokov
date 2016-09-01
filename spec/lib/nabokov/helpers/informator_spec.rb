@@ -1,4 +1,4 @@
-require 'nabokov/helpers/informator'
+require "nabokov/helpers/informator"
 
 describe Nabokov::Informator do
   let(:ui) { object_double(Cork::Board.new(silent: true, verbose: true)) }
