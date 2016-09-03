@@ -1,0 +1,8 @@
+localizations_repo:
+  url: 'https://github.com/Antondomashnev/nabokov_example.git'
+
+project_repo:
+  localizations:
+    :en: 'spec/fixtures/en.strings'
+    :de: 'spec/fixtures/de.strings'
+  local_path: 'spec/fixtures/local_project'
