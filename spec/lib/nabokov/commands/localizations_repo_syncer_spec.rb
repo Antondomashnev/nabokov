@@ -3,13 +3,13 @@ require "nabokov/git/git_repo"
 require "nabokov/helpers/merger"
 require "nabokov/helpers/informator"
 
-describe Nabokov::RepoSyncer do
+describe Nabokov::LocalizationsRepoSyncer do
   before(:each) do
     allow(STDOUT).to receive(:puts)
   end
 
   it "is not an abstract command" do
-    expect(Nabokov::RepoSyncer.abstract_command).to be_falsy
+    expect(Nabokov::LocalizationsRepoSyncer.abstract_command).to be_falsy
   end
 
   describe "run" do
@@ -58,7 +58,7 @@ describe Nabokov::RepoSyncer do
           expect(@git_repo).to receive(:pull).ordered
           expect(@git_repo).to receive(:delete_branch).with("nabokov/temporary_branch").ordered
 
-          Nabokov::RepoSyncer.run(["--nabokovfile=spec/fixtures/nabokovfile_example_without_master_branch.yaml"])
+          Nabokov::LocalizationsRepoSyncer.run(["--nabokovfile=spec/fixtures/nabokovfile_example_without_master_branch.yaml"])
         end
       end
 
@@ -85,7 +85,7 @@ describe Nabokov::RepoSyncer do
             expect(@git_repo).to receive(:push).ordered
             expect(@git_repo).to receive(:delete_branch).with("nabokov/temporary_branch").ordered
 
-            Nabokov::RepoSyncer.run(["--nabokovfile=spec/fixtures/nabokovfile_example_without_master_branch.yaml"])
+            Nabokov::LocalizationsRepoSyncer.run(["--nabokovfile=spec/fixtures/nabokovfile_example_without_master_branch.yaml"])
           end
         end
 
@@ -107,7 +107,7 @@ describe Nabokov::RepoSyncer do
               expect(@git_repo).to receive(:pull).ordered
               expect(@git_repo).to receive(:delete_branch).with("nabokov/temporary_branch").ordered
 
-              Nabokov::RepoSyncer.run(["--nabokovfile=spec/fixtures/nabokovfile_example_without_master_branch.yaml"])
+              Nabokov::LocalizationsRepoSyncer.run(["--nabokovfile=spec/fixtures/nabokovfile_example_without_master_branch.yaml"])
             end
           end
 
@@ -129,7 +129,7 @@ describe Nabokov::RepoSyncer do
               expect(@git_repo).to receive(:push).ordered
               expect(@git_repo).to receive(:delete_branch).with("nabokov/temporary_branch").ordered
 
-              Nabokov::RepoSyncer.run(["--nabokovfile=spec/fixtures/nabokovfile_example_without_master_branch.yaml"])
+              Nabokov::LocalizationsRepoSyncer.run(["--nabokovfile=spec/fixtures/nabokovfile_example_without_master_branch.yaml"])
             end
           end
         end

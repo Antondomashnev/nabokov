@@ -3,7 +3,7 @@ require "nabokov/core/file_manager"
 require "nabokov/helpers/merger"
 
 module Nabokov
-  class RepoSyncer < Syncer
+  class LocalizationsRepoSyncer < Syncer
     self.abstract_command = false
     self.summary = "Sync remote localizations repo with the local localization strings."
 
