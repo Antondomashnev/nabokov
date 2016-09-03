@@ -9,6 +9,10 @@ describe Nabokov::Setup do
       Git.init("spec/fixtures/test_git_setup/git_folder")
     end
 
+    after(:all) do
+      FileUtils.rm_rf("spec/fixtures/test_git_setup/git_folder")
+    end
+
     before(:each) do
       allow(STDOUT).to receive(:puts)
     end
