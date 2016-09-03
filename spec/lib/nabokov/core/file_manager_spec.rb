@@ -57,7 +57,7 @@ describe Nabokov::FileManager do
         Nabokov::FileManager.copy_and_rename(from_path, @test_copy_folder_path, new_file_name)
         time_before_copy = File.mtime("spec/fixtures/test_copy_folder/fr.strings")
         new_file_path = Nabokov::FileManager.copy_and_rename(from_path, @test_copy_folder_path, new_file_name)
-        expect(File.mtime(new_file_path)).to be == time_before_copy
+        expect(File.mtime(new_file_path)).to be >= time_before_copy
       end
     end
   end
