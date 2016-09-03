@@ -2,15 +2,20 @@ require "nabokov/core/file_manager"
 
 describe Nabokov::FileManager do
   describe "copy and rename" do
+    before do
+      @test_copy_folder_path = "spec/fixtures/test_copy_folder/"
+      FileUtils.mkdir_p("spec/fixtures/test_copy_folder")
+    end
+
     after do
-      FileUtils.rm_rf(Dir.glob("spec/fixtures/test_copy_folder/*"))
+      FileUtils.rm_rf("spec/fixtures/test_copy_folder")
     end
 
     context "when there is no file at from_path" do
       it "raises an exception" do
         from_path = "spec/fixtures/fr.strings"
         new_file_name = "fr.strings"
-        expect { Nabokov::FileManager.copy_and_rename(from_path, "spec/fixtures/test_copy_folder/", new_file_name) }.to raise_error("Couldn't find file at 'spec/fixtures/fr.strings'")
+        expect { Nabokov::FileManager.copy_and_rename(from_path, @test_copy_folder_path, new_file_name) }.to raise_error("Couldn't find file at 'spec/fixtures/fr.strings'")
       end
     end
 
@@ -26,7 +31,7 @@ describe Nabokov::FileManager do
       it "raises an exception" do
         from_path = "spec/fixtures/de.strings"
         new_file_name = ""
-        expect { Nabokov::FileManager.copy_and_rename(from_path, "spec/fixtures/test_copy_folder/", new_file_name) }.to raise_error("New name of the file could not be empty")
+        expect { Nabokov::FileManager.copy_and_rename(from_path, @test_copy_folder_path, new_file_name) }.to raise_error("New name of the file could not be empty")
       end
     end
 
@@ -34,7 +39,7 @@ describe Nabokov::FileManager do
       it "raises an exception because it messes up with the extension delimeter" do
         from_path = "spec/fixtures/de.strings"
         new_file_name = "fr.de"
-        expect { Nabokov::FileManager.copy_and_rename(from_path, "spec/fixtures/test_copy_folder/", new_file_name) }.to raise_error("New name of the file 'fr.de' contains invalid character '.'")
+        expect { Nabokov::FileManager.copy_and_rename(from_path, @test_copy_folder_path, new_file_name) }.to raise_error("New name of the file 'fr.de' contains invalid character '.'")
       end
     end
 
@@ -42,17 +47,17 @@ describe Nabokov::FileManager do
       it "copies the file according input parameters" do
         from_path = "spec/fixtures/de.strings"
         new_file_name = "fr"
-        new_file_path = Nabokov::FileManager.copy_and_rename(from_path, "spec/fixtures/test_copy_folder/", new_file_name)
+        new_file_path = Nabokov::FileManager.copy_and_rename(from_path, @test_copy_folder_path, new_file_name)
         expect(File.file?(new_file_path)).to be_truthy
       end
 
       it "overwrites the file according input parameters" do
         from_path = "spec/fixtures/de.strings"
-        to_directory =
-          new_file_name = "fr"
-        time_before_copy = File.mtime("spec/fixtures/test_overwrite_folder/fr.strings")
-        new_file_path = Nabokov::FileManager.copy_and_rename(from_path, "spec/fixtures/test_overwrite_folder", new_file_name)
-        expect(File.mtime(new_file_path)).to be > time_before_copy
+        new_file_name = "fr"
+        Nabokov::FileManager.copy_and_rename(from_path, @test_copy_folder_path, new_file_name)
+        time_before_copy = File.mtime("spec/fixtures/test_copy_folder/fr.strings")
+        new_file_path = Nabokov::FileManager.copy_and_rename(from_path, @test_copy_folder_path, new_file_name)
+        expect(File.mtime(new_file_path)).to be == time_before_copy
       end
     end
   end

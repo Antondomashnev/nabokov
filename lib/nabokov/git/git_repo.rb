@@ -6,6 +6,7 @@ require "pathname"
 module Nabokov
   class GitRepo
     attr_accessor :remote_url, :local_path
+    attr_reader :git_repo
 
     def initialize(local_path, remote_url = nil, git_repo = nil)
       raise "local_path is a required parameter" if local_path.nil?
