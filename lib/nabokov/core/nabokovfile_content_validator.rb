@@ -2,6 +2,8 @@ require "uri"
 require "nabokov/core/nabokovfile_keys"
 
 module Nabokov
+  # This class is responsible for nabokovfile content validation
+  # The validation rules are for localizations_repo and project_repo settings
   class NabokovfileContentValidator
     attr_accessor :nabokovfile_hash
 
@@ -9,6 +11,13 @@ module Nabokov
       self.nabokovfile_hash = nabokovfile_hash
     end
 
+    # Performs validation
+    # First rule: localizations_repo should be the type of Hash
+    #             localizations_repo_url should be valid URL with secure https scheme
+    # Second rule: project_repo should be the type of Hash
+    #              project localizations_key should be the of Hash
+    #              project_localization_file_paths should point to existed files
+    #              project_local_path should point to valid folder
     def validate
       validate_localizations_repo
       validate_project_repo

@@ -1,6 +1,3 @@
-require "nabokov/core/nabokovfile"
-require "nabokov/core/file_manager"
-require "nabokov/git/git_repo"
 require "nabokov/version"
 require "nabokov/helpers/informator"
 require "claide"

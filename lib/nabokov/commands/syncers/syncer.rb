@@ -1,4 +1,7 @@
 require "nabokov/commands/runner"
+require "nabokov/core/nabokovfile"
+require "nabokov/core/file_manager"
+require "nabokov/git/git_repo"
 
 module Nabokov
   class Syncer < Runner
@@ -10,6 +13,10 @@ module Nabokov
 
     def initialize(argv)
       nabokovfile = argv.option("nabokovfile")
+      unless nabokovfile
+        pwd_nabokovfile = Pathname.pwd + "Nabokovfile.yaml"
+        nabokovfile = pwd_nabokovfile if File.exist?(pwd_nabokovfile)
+      end
       raise "--nabokovfile is a required parameter and could not be nil" if nabokovfile.nil?
 
       @nabokovfile_path = nabokovfile if File.exist?(nabokovfile)

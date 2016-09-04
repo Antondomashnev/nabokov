@@ -4,8 +4,14 @@ require "securerandom"
 require "pathname"
 
 module Nabokov
+  # This class is basically the wrapper aroung the ruby-git gem
+  # Note: the ruby gem is taken not from gem spec repo, but from https://github.com/Antondomashnev/ruby-git
   class GitRepo
-    attr_accessor :remote_url, :local_path
+    # @return [String] Repo's remote URL, could be nil
+    attr_accessor :remote_url
+    # @return [String] Local path to the repo
+    attr_accessor :local_path
+    # @return [Git::Base] Underlying git repo
     attr_reader :git_repo
 
     def initialize(local_path, remote_url = nil, git_repo = nil)
