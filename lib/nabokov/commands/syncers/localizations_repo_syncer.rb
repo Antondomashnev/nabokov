@@ -20,6 +20,7 @@ module Nabokov
     end
 
     def run
+      ui.important("Nabokov starts localizations repo synchronization")
       super
       checkout_temporary_branch
       has_changes = update_localization_files
@@ -29,12 +30,13 @@ module Nabokov
         push_changes_to_remote
       end
       delete_temporary_branch
+      ui.inform("Nabokov has finished localizations repo synchronization")
     end
 
     private
 
     def checkout_temporary_branch
-      ui.say("Checkout a temporary branch for new localization strings…")
+      ui.say("Checkout a temporary branch for new localization strings...")
       self.git_repo.checkout_branch(temporary_branch)
     end
 
@@ -55,7 +57,7 @@ module Nabokov
     end
 
     def checkout_master_branch
-      ui.say("Checkout master branch…")
+      ui.say("Checkout master branch...")
       self.git_repo.checkout_branch(self.nabokovfile.localizations_repo_master_branch)
       @rescue_commit_sha = self.git_repo.log(1)
     end
@@ -71,7 +73,7 @@ module Nabokov
     end
 
     def push_changes_to_remote
-      ui.say("Pushing changes to remote…")
+      ui.say("Pushing changes to remote...")
       self.git_repo.push
     end
 

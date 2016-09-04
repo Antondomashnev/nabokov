@@ -25,6 +25,7 @@ module Nabokov
       ensure_pre_commit_file_exists
       ensure_pre_commit_file_is_executable
       ensure_hook_is_installed
+      ui.important "nabokov pre commit git hook is installed"
       self
     end
 
@@ -47,7 +48,10 @@ module Nabokov
     end
 
     def ensure_hook_is_installed
-      git_repo_path = system("git rev-parse --show-toplevel")
+      git_repo_path = ""
+      IO.popen("git rev-parse --show-toplevel", "r+") do |pipe|
+        git_repo_path = pipe.read
+      end
       return if File.foreach(@pre_commit_file).grep(/git_repo_path/).any?
 
       File.open(@pre_commit_file, "r+") do |f|
