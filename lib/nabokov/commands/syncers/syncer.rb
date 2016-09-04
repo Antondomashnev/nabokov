@@ -14,8 +14,8 @@ module Nabokov
     def initialize(argv)
       nabokovfile = argv.option("nabokovfile")
       unless nabokovfile
-        pwd_nabokovfile = Pathname.pwd + 'Nabokovfile.yaml'
-        nabokovfile = pwd_nabokovfile if File.exist?(pwd_nabokovfile)
+        pwd_nabokovfile = Pathname.pwd + "Nabokovfile.yaml"
+        nabokovfile = pwd_nabokovfile if File.exist?(pwd_nabokovf)
       end
       raise "--nabokovfile is a required parameter and could not be nil" if nabokovfile.nil?
 
