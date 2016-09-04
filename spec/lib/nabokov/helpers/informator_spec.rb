@@ -11,9 +11,17 @@ describe Nabokov::Informator do
   end
 
   describe "say" do
-    it "prints plain message" do
-      expect(ui).to receive(:puts).with("Hey!")
-      Nabokov::Informator.new(ui).say("Hey!")
+    context "when verbose" do
+      it "prints plain message" do
+        expect(ui).to receive(:puts).with("Hey!")
+        Nabokov::Informator.new(ui, true).say("Hey!")
+      end
+    end
+
+    context "when not verbose" do
+      it "doesn't print plain message" do
+        Nabokov::Informator.new(ui, false).say("Hey!")
+      end
     end
   end
 
@@ -21,6 +29,15 @@ describe Nabokov::Informator do
     it "prints green message" do
       expect(ui).to receive(:puts).with("Nabokov is working".green)
       Nabokov::Informator.new(ui).inform("Nabokov is working")
+    end
+  end
+
+  describe "important" do
+    it "prints green message in the box" do
+      expect(ui).to receive(:puts).with("------------".green).ordered
+      expect(ui).to receive(:puts).with("--- Hey! ---".green).ordered
+      expect(ui).to receive(:puts).with("------------".green).ordered
+      Nabokov::Informator.new(ui).important("Hey!")
     end
   end
 

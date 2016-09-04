@@ -21,6 +21,7 @@ module Nabokov
     end
 
     def run
+      ui.important("Nabokov starts project repo synchronization")
       super
       fetch_localization_repo_master_branch_changes
       init_project_git_repo
@@ -31,6 +32,7 @@ module Nabokov
         merge_project_repo_original_branch_with_temporary
       end
       delete_temporary_branch
+      ui.important("Nabokov has finished project repo synchronization")
     end
 
     private
@@ -38,7 +40,7 @@ module Nabokov
     def init_project_git_repo
       @project_git_repo = GitRepo.new(@nabokovfile.project_local_path)
       raise "Could not find the project repo at '#{Dir.exist?(@project_git_repo.local_path)}'" unless Dir.exist?(@project_git_repo.local_path)
-      ui.inform("Found existed project repo at #{@project_git_repo.local_path}...")
+      ui.say("Found existed project repo at #{@project_git_repo.local_path}...")
       @project_git_repo.init
       @project_repo_original_branch = @project_git_repo.current_branch
     end

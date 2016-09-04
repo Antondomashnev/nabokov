@@ -6,8 +6,9 @@ module Nabokov
   class Informator
     attr_accessor :no_waiting, :ui
 
-    def initialize(cork_board)
+    def initialize(cork_board, verbose = false)
       @ui = cork_board
+      @verbose = verbose
     end
 
     def show_prompt
@@ -15,11 +16,18 @@ module Nabokov
     end
 
     def say(message)
-      ui.puts(message)
+      ui.puts(message) if @verbose
     end
 
     def inform(message)
       ui.puts(message.green)
+    end
+
+    def important(message)
+      i = message.length + 8
+      inform("-" * i)
+      inform("--- " + message + " ---")
+      inform("-" * i)
     end
 
     def warn(message)

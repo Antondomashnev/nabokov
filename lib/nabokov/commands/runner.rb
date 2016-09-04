@@ -10,12 +10,16 @@ module Nabokov
     self.version = Nabokov::VERSION
 
     def initialize(argv)
-      @cork = Cork::Board.new(silent: argv.option("silent", false), verbose: argv.option("verbose", false))
       super
+      @cork = Cork::Board.new(silent: argv.option("silent", false), verbose: argv.option("verbose", false))
     end
 
     def ui
-      @ui ||= Informator.new(@cork)
+      if self.verbose
+        @ui ||= Informator.new(@cork, self.verbose)
+      else
+        @ui ||= Informator.new(@cork)
+      end
     end
   end
 end
