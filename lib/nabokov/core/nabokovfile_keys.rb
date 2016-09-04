@@ -1,5 +1,5 @@
 module Nabokov
-  # Class contains the named 
+  # Class contains the named constants for nabokovfile keyes
   class NabokovfileKeyes
     # @return [String] The key to get the localizations repo settings
     def self.localizations_repo
