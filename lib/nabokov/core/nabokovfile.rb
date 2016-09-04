@@ -4,12 +4,17 @@ require "nabokov/core/nabokovfile_keys"
 require "nabokov/core/nabokovfile_content_validator"
 
 module Nabokov
+  # Class represents the nabokovfile with the settings for nabokov
   class Nabokovfile
+    # @return [String] The localizations repo url string
     attr_accessor :localizations_repo_url
+    # @return [String] The localizations repo master branch
     attr_accessor :localizations_repo_master_branch
+    # @return [String] The localizations repo local path
     attr_accessor :localizations_repo_local_path
-
+    # @return [Hash] The Hash with key as localization name and value as repspected localization file path
     attr_accessor :project_localization_file_paths
+    # @return [String] The project repo local path
     attr_accessor :project_local_path
 
     def initialize(path)
@@ -19,10 +24,6 @@ module Nabokov
       yaml_data = read_data_from_yaml_file(nabokovfile, path)
       validate_content(yaml_data)
       read_content(yaml_data)
-    end
-
-    def name
-      "Nabokovfile"
     end
 
     def localizations_repo_local_path
