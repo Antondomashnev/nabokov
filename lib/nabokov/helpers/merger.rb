@@ -2,11 +2,13 @@ require "nabokov/git/git_repo"
 require "nabokov/helpers/informator"
 
 module Nabokov
+  # Result of the merge action perfomed by Nabokov::Merger
   class MergerResult
     SUCCEEDED = "succeeded".freeze
     ABORTED = "aborted".freeze
   end
 
+  # Class is responsible for merging two branches
   class Merger
     def initialize(informator, git_repo, rescue_commit_sha = nil)
       raise "'informator' is a required parameter" if informator.nil?
@@ -16,6 +18,9 @@ module Nabokov
       @informator = informator
     end
 
+    # Merges one branch with another branch
+    # It handles the situation when there are merge conflicts and provides
+    #    the interface to the user to resolve the conflicts
     def merge(head, branch)
       @git_repo.merge_branches(head, branch)
       MergerResult::SUCCEEDED

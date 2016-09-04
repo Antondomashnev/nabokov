@@ -1,7 +1,12 @@
 require "nabokov/commands/runner"
 require "fileutils"
+require "nabokov/core/nabokovfile"
+require "nabokov/core/file_manager"
+require "nabokov/git/git_repo"
 
 module Nabokov
+  # Command to setup the project repo to use nabokov
+  # It setups the pre commit hook to start Nabokov::LocalizationsRepoSyncer
   class Setup < Runner
     self.summary = "Set up the repository hook to sync app localization."
     self.command = "setup"

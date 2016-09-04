@@ -1,9 +1,8 @@
-# This class is heavily based on the Interviewer class from the Danger gem
-# The original link is https://github.com/danger/danger/blob/master/lib/danger/commands/init_helpers/interviewer.rb
-
 require "cork"
 
 module Nabokov
+  # This class is heavily based on the Interviewer class from the Danger gem
+  # The original link is https://github.com/danger/danger/blob/master/lib/danger/commands/init_helpers/interviewer.rb
   class Informator
     attr_accessor :no_waiting, :ui
 

@@ -1,4 +1,4 @@
-require "nabokov/commands/syncers/repo_syncer"
+require "nabokov/commands/syncers/localizations_repo_syncer"
 require "nabokov/git/git_repo"
 require "nabokov/helpers/merger"
 require "nabokov/helpers/informator"
