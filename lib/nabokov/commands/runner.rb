@@ -8,6 +8,7 @@ module Nabokov
     self.abstract_command = true
     self.summary = "The abstract super class for all nabokov commands."
     self.version = Nabokov::VERSION
+    self.command = "nabokov"
 
     def initialize(argv)
       super

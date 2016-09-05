@@ -5,6 +5,7 @@ require "nabokov/helpers/merger"
 module Nabokov
   class LocalizationsRepoSyncer < Syncer
     self.abstract_command = false
+    self.command = "localizations"
     self.summary = "Sync remote localizations repo with the local localization strings."
 
     def initialize(argv)

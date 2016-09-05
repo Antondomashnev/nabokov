@@ -10,6 +10,7 @@ module Nabokov
 
     self.abstract_command = true
     self.summary = "The abstract super class for all nabokov sync related commands."
+    self.command = "sync"
 
     def initialize(argv)
       nabokovfile = argv.option("nabokovfile")
