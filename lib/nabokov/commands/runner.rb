@@ -6,7 +6,7 @@ require "cork"
 module Nabokov
   class Runner < CLAide::Command
     self.abstract_command = true
-    self.summary = "The abstract super class for all nabokov commands."
+    self.summary = "The abstract command for all nabokov commands."
     self.version = Nabokov::VERSION
     self.command = "nabokov"
 

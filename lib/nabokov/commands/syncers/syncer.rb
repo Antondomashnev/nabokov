@@ -9,7 +9,7 @@ module Nabokov
     attr_reader :git_repo
 
     self.abstract_command = true
-    self.summary = "The abstract super class for all nabokov sync related commands."
+    self.summary = "The abstract command for all nabokov synchronizations related commands."
     self.command = "sync"
 
     def initialize(argv)

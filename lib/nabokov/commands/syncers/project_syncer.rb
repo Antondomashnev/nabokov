@@ -7,7 +7,7 @@ module Nabokov
   class ProjectSyncer < Syncer
     self.abstract_command = false
     self.command = "project"
-    self.summary = "Sync local localization strings with the remote localizations repo."
+    self.summary = "Synchronize project localization strings with the remote localizations repo."
 
     def initialize(argv)
       super

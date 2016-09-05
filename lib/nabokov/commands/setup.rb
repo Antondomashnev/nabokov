@@ -8,8 +8,9 @@ module Nabokov
   # Command to setup the project repo to use nabokov
   # It setups the pre commit hook to start Nabokov::LocalizationsRepoSyncer
   class Setup < Runner
-    self.summary = "Set up the repository hook to sync app localization."
+    self.summary = "Set ups the repository hook to sync app localizations."
     self.command = "setup"
+    self.description = "Installs the pre-commit git hook with the logic to run 'nabokov sync localizations'"
 
     attr_reader :pre_commit_file
 
