@@ -1,6 +1,5 @@
 localizations_repo:
   url: 'https://github.com/Antondomashnev/nabokov_example.git'
-  master_branch: 'shmaster'
 
 project_repo:
   localizations:
