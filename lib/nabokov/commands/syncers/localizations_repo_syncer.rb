@@ -39,17 +39,15 @@ module Nabokov
 
     def notify_user_about_finish
       if @synchronized_file_names.count > 0
-        ui.say("#{@synchronized_file_names} have been updated on remote.")
-        ui.say("Your are all set.")
+        ui.say("#{@synchronized_file_names} have been updated on remote, your are all set for now 🎉")
       else
-        ui.say("Nothing to synchronize, localizations in the remote")
-        ui.say("repo and project repo are the same.")
+        ui.say("Nothing to synchronize, localizations in the remote repo and project repo are the same.")
       end
-      ui.important("Nabokov has finished localizations remote repo synchronization 🎉")
+      ui.important("Nabokov has finished localizations remote repo synchronization")
     end
 
     def checkout_temporary_branch
-      ui.say("Checkout a temporary branch for new localization strings...")
+      ui.say("Checkout a temporary branch for new localization strings...") if self.verbose
       self.git_repo.checkout_branch(temporary_branch)
     end
 

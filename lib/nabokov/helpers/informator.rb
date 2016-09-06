@@ -8,7 +8,6 @@ module Nabokov
 
     def initialize(cork_board)
       @ui = cork_board
-      @verbose = verbose
     end
 
     def show_prompt

@@ -58,7 +58,7 @@ module Nabokov
       File.open(@pre_commit_file, "r+") do |f|
         f.puts("#!/usr/bin/env bash")
         f.puts("current_repo_path=\$(git rev-parse --show-toplevel)")
-        f.puts("nabokovfile_path=\"$current_repo_path/Nabokovfile\"")
+        f.puts("nabokovfile_path=\"$current_repo_path/Nabokovfile.yaml\"")
         f.puts("tracking_repo_path=\"#{git_repo_path.strip}\"")
         f.puts("if [ \"$current_repo_path\" == \"$tracking_repo_path\" ] && gem list -i nabokov && [ -e \"$nabokovfile_path\" ]; then /Users/antondomashnev/Work/nabokov/bin/nabokov sync localizations --nabokovfile=$nabokovfile_path || exit 1; fi")
       end
