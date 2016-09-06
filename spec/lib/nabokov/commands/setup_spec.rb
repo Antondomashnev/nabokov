@@ -78,7 +78,7 @@ describe Nabokov::Setup do
 
       it "puts into pre commit line about nabokovfile path" do
         result = File.foreach("spec/fixtures/test_git_setup/existed_pre_commit_file").any? do |line|
-          line.include?("nabokovfile_path=\"$current_repo_path\/Nabokovfile\"")
+          line.include?("nabokovfile_path=\"$current_repo_path\/Nabokovfile.yaml\"")
         end
         expect(result).to be_truthy
       end
@@ -92,7 +92,7 @@ describe Nabokov::Setup do
 
       it "puts into pre commit line to exectute nabokov" do
         result = File.foreach("spec/fixtures/test_git_setup/existed_pre_commit_file").any? do |line|
-          line.include?("if [ \"$current_repo_path\" == \"$tracking_repo_path\" ] && gem list -i nabokov && [ -e \"$nabokovfile_path\" ]; then nabokov --nabokovfile=$nabokovfile_path || exit 1; fi")
+          line.include?("if [ \"$current_repo_path\" == \"$tracking_repo_path\" ] && gem list -i nabokov && [ -e \"$nabokovfile_path\" ]; then nabokov sync localizations --nabokovfile=$nabokovfile_path || exit 1; fi")
         end
         expect(result).to be_truthy
       end
