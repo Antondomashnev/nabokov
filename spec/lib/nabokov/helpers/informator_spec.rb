@@ -11,17 +11,9 @@ describe Nabokov::Informator do
   end
 
   describe "say" do
-    context "when verbose" do
-      it "prints plain message" do
-        expect(ui).to receive(:puts).with("Hey!")
-        Nabokov::Informator.new(ui, true).say("Hey!")
-      end
-    end
-
-    context "when not verbose" do
-      it "doesn't print plain message" do
-        Nabokov::Informator.new(ui, false).say("Hey!")
-      end
+    it "prints plain message" do
+      expect(ui).to receive(:puts).with("Hey!")
+      Nabokov::Informator.new(ui).say("Hey!")
     end
   end
 

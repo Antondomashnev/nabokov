@@ -9,7 +9,7 @@ module Nabokov
     attr_reader :git_repo
 
     self.abstract_command = true
-    self.summary = "The abstract command for all nabokov synchronizations related commands."
+    self.summary = "Synchronization between localizations and project."
     self.command = "sync"
 
     def initialize(argv)

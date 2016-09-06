@@ -6,7 +6,7 @@ module Nabokov
   class Informator
     attr_accessor :no_waiting, :ui
 
-    def initialize(cork_board, verbose = false)
+    def initialize(cork_board)
       @ui = cork_board
       @verbose = verbose
     end
@@ -16,7 +16,7 @@ module Nabokov
     end
 
     def say(message)
-      ui.puts(message) if @verbose
+      ui.puts(message)
     end
 
     def inform(message)

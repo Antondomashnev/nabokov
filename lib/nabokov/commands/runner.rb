@@ -16,11 +16,7 @@ module Nabokov
     end
 
     def ui
-      if self.verbose
-        @ui ||= Informator.new(@cork, self.verbose)
-      else
-        @ui ||= Informator.new(@cork)
-      end
+      @ui ||= Informator.new(@cork)
     end
   end
 end
