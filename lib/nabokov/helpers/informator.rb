@@ -49,15 +49,7 @@ module Nabokov
       answer = ""
       loop do
         show_prompt
-        answer = @no_waiting ? possible_answers[0].downcase : STDIN.gets.downcase.chomp
-        answer = "yes" if answer == "y"
-        answer = "no" if answer == "n"
-
-        # default to first answer
-        if answer == ""
-          answer = possible_answers[0].downcase
-          ui.puts "Using: " + answer.yellow
-        end
+        answer = read_answer(possible_answers)
 
         break if possible_answers.map(&:downcase).include? answer
 
@@ -68,6 +60,19 @@ module Nabokov
     end
 
     private
+
+    def read_answer(possible_answers)
+      answer = @no_waiting ? possible_answers[0].downcase : STDIN.gets.downcase.chomp
+      answer = "yes" if answer == "y"
+      answer = "no" if answer == "n"
+
+      # default to first answer
+      if answer == ""
+        answer = possible_answers[0].downcase
+        ui.puts "Using: " + answer.yellow
+      end
+      answer
+    end
 
     def print_possible_answers(possible_answers)
       possible_answers.each_with_index do |answer, i|
