@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.0.0"
 
   spec.add_runtime_dependency "rspec", "~> 3.4"
-  spec.add_runtime_dependency "git", git: "https://github.com/Antondomashnev/ruby-git.git"
+  spec.add_runtime_dependency "git", "~> 1.0"
   spec.add_runtime_dependency "claide", "~> 1.0"
   spec.add_runtime_dependency "cork", "~> 0.1"
 
