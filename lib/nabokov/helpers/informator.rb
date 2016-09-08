@@ -45,23 +45,11 @@ module Nabokov
 
     def ask_with_answers(question, possible_answers)
       ui.print("\n#{question}? [")
-
-      print_info = proc do
-        possible_answers.each_with_index do |answer, i|
-          the_answer = i.zero? ? answer.underline : answer
-          ui.print " " + the_answer
-          ui.print(" /") if i != possible_answers.length - 1
-        end
-        ui.print " ]\n"
-      end
-      print_info.call
-
+      print_possible_answers(possible_answers)
       answer = ""
-
       loop do
         show_prompt
         answer = @no_waiting ? possible_answers[0].downcase : STDIN.gets.downcase.chomp
-
         answer = "yes" if answer == "y"
         answer = "no" if answer == "n"
 
@@ -74,10 +62,20 @@ module Nabokov
         break if possible_answers.map(&:downcase).include? answer
 
         ui.print "\nPossible answers are ["
-        print_info.call
+        print_possible_answers(possible_answers)
       end
-
       answer
+    end
+
+    private
+
+    def print_possible_answers(possible_answers)
+      possible_answers.each_with_index do |answer, i|
+        the_answer = i.zero? ? answer.underline : answer
+        ui.print " " + the_answer
+        ui.print(" /") if i != possible_answers.length - 1
+      end
+      ui.print " ]\n"
     end
   end
 end
