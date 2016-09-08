@@ -58,8 +58,6 @@ module Nabokov
       home_dir + nabokov_dir_name + repo_url_organization + "/" + repo_url_name_without_extension
     end
 
-    private
-
     def read_localizations_repo_content(content_hash)
       localizations_repo = content_hash[NabokovfileKeyes.localizations_repo]
       self.localizations_repo_url = localizations_repo[NabokovfileKeyes.localizations_repo_url]
