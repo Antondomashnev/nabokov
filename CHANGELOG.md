@@ -4,7 +4,6 @@
 
 * Your contribution here.
 * [#18](https://github.com/Antondomashnev/nabokov/pull/18): Fix changelog format - [@antondomashnev](https://github.com/antondomashnev)
-* [#17](https://github.com/Antondomashnev/nabokov/pull/16): Fix changelog format - [@antondomashnev](https://github.com/antondomashnev)
 
 ## 0.1.1
 
