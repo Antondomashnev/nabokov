@@ -18,7 +18,8 @@ changelog.check unless declared_trivial
 
 protected_files = ["nabokov.gemspec", "Dangerfile", "Gemfile", ".gitignore", ".travis.yml", ".rubocop.yml", "Rakefile"]
 protected_files.each do |file|
-  files.protect_files(path: file, message: "#{file} modified", fail_build: false)
+  next if modified_files.grep(/#{file}/).empty?
+  warn("#{file} has been modified")
 end
 
 junit.parse "junit-results.xml"
