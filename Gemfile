@@ -10,4 +10,3 @@ gem "rake", "~> 10.0"
 
 gem "danger", "~> 3.0"
 gem "danger-changelog"
-gem "danger-junit", "~> 0.5"

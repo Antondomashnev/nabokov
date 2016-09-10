@@ -21,7 +21,3 @@ protected_files.each do |file|
   next if git.modified_files.grep(/#{file}/).empty?
   warn("#{file} has been modified")
 end
-
-junit.parse "junit-results.xml"
-junit.headers = [:file, :name]
-junit.report
