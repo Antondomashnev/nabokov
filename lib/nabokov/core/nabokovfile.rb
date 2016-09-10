@@ -45,13 +45,8 @@ module Nabokov
     end
 
     def read_content(content_hash)
-      localizations_repo = content_hash[NabokovfileKeyes.localizations_repo]
-      self.localizations_repo_url = localizations_repo[NabokovfileKeyes.localizations_repo_url]
-      self.localizations_repo_master_branch = localizations_repo[NabokovfileKeyes.localizations_repo_master_branch].nil? ? "master" : localizations_repo[NabokovfileKeyes.localizations_repo_master_branch]
-      project_repo = content_hash[NabokovfileKeyes.project_repo]
-      self.project_localization_file_paths = project_repo[NabokovfileKeyes.project_localization_file_paths]
-      self.project_local_path = project_repo[NabokovfileKeyes.project_local_path]
-      self.localizations_repo_local_path = build_localization_local_path
+      read_localizations_repo_content(content_hash)
+      read_project_repo_content(content_hash)
     end
 
     def build_localization_local_path
@@ -61,6 +56,19 @@ module Nabokov
       repo_url_organization = File.dirname(repo_url_path).downcase
       nabokov_dir_name = "/.nabokov"
       home_dir + nabokov_dir_name + repo_url_organization + "/" + repo_url_name_without_extension
+    end
+
+    def read_localizations_repo_content(content_hash)
+      localizations_repo = content_hash[NabokovfileKeyes.localizations_repo]
+      self.localizations_repo_url = localizations_repo[NabokovfileKeyes.localizations_repo_url]
+      self.localizations_repo_master_branch = localizations_repo[NabokovfileKeyes.localizations_repo_master_branch].nil? ? "master" : localizations_repo[NabokovfileKeyes.localizations_repo_master_branch]
+    end
+
+    def read_project_repo_content(content_hash)
+      project_repo = content_hash[NabokovfileKeyes.project_repo]
+      self.project_localization_file_paths = project_repo[NabokovfileKeyes.project_localization_file_paths]
+      self.project_local_path = project_repo[NabokovfileKeyes.project_local_path]
+      self.localizations_repo_local_path = build_localization_local_path
     end
   end
 end
