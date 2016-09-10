@@ -18,7 +18,7 @@ changelog.check unless declared_trivial
 
 protected_files = ["nabokov.gemspec", "Dangerfile", "Gemfile", ".gitignore", ".travis.yml", ".rubocop.yml", "Rakefile"]
 protected_files.each do |file|
-  next if modified_files.grep(/#{file}/).empty?
+  next if git.modified_files.grep(/#{file}/).empty?
   warn("#{file} has been modified")
 end
 
