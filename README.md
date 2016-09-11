@@ -5,7 +5,7 @@
 ![travis badge](https://travis-ci.org/Antondomashnev/nabokov.svg?branch=master)
 [![Gem](https://img.shields.io/gem/v/nabokov.svg?style=flat)](http://rubygems.org/gems/nabokov)
 
-Move mobile localization process up to the next level 🚀.
+Move mobile localization process up to the next level .
 
 ## Getting Started
 
@@ -30,13 +30,13 @@ Nabokov is has been developed in order to improve and simplify the process of th
 * After a while developer adds new strings that have to be translated
 * Goto step 1  
   
-Also once it comes to the conflicts - remote repo has updates translation which are not in the project yet, and project has new strings which are not translated yet, the whole thing becomes a pain at least that was what I feel.
+Also once it comes to the conflicts - remote repo has updated translation which is not on the project yet, and project has new strings which are not translated yet, the whole thing becomes a pain at least that was what I feel.
 
 ## Why nabokov could be useful 
 
 With Nabokov the flow above could be replaced with two commands:
-* `bundle exec nabokov sync localizations` - uploads strings files on to remote localizatios repo
-* `bundle exec nabokov sync project` - apply remote localizations in to project  
+* `bundle exec nabokov sync localizations` - uploads strings files on to remote localizations repo
+* `bundle exec nabokov sync project` - apply remote localizations into project  
   
 When it comes to the merge conflicts - nabokov allows user to user the preferable merge tool which is smoothify the process.
 
@@ -44,7 +44,7 @@ When it comes to the merge conflicts - nabokov allows user to user the preferabl
 
 ### Nabokovfile
 
-The projects settings for Nabokov are stored in the files `Nabokov.yaml` which has `yaml` format and places in the directory with the `Gemfile`. The structure of the file is explaned below:
+The projects settings for Nabokov are stored in the files `Nabokov.yaml` which has `YAML` format and places in the directory with the `Gemfile`. The structure of the file is explained below:
 ```
 localizations_repo:
   url: 'url to the localizations repo'
@@ -52,26 +52,26 @@ localizations_repo:
 
 project_repo:
   localizations:
-    :en: 'relative path to the english localization strings file in the project'
+    :en: 'relative path to the English localization strings file in the project'
     :another: 'relative path to the another localization strings file in the project'
   local_path: 'relative path to the project'
 ```
 
 ### Initial set up
 
-After running `bundle exec nabokov setup` strings files uploading to the remote repo will be done automatically via `pre commit git hook`. Remember that the project synchronization still has to be done manually by running `bundle exec nabokov sync project`
+After running `bundle exec nabokov setup` strings files uploading to the remote repo will be done automatically via `pre-commit git hook`. Remember that the project synchronization still has to be done manually by running `bundle exec nabokov sync project`
 
 ### Synchronization
 
-If you need to synhronize the strings with the remote repo manually of withiout `pre commit git hook`, you can use the `bundle exec nabokov sync localizations` command. When you want to update the project's strings files with the remote one you can run `bundle exec nabokov sync project` command.
+If you need to synchronize the strings with the remote repo manually of without `pre-commit git hook`, you can use the `bundle exec nabokov sync localizations` command. When you want to update the project's strings files with the remote one you can run `bundle exec nabokov sync project` command.
 
 ## Current status
 
-This project is on the early development stage but is ready for production since even in case of data corruption the valid state can be rolled back via git. 
+This project is in the early development stage but is ready for production since even in a case of data corruption the valid state can be rolled back via git. 
 
 ## Behind the scene
 
-This is my first ruby project except small experiments on the local machine before. So please bare it in mind and I would really appreciate any point about code style or better way to implement something.
+This is my first ruby project except for small experiments on the local machine before. So please bare it in mind and I would really appreciate any point about code style or better way to implement something.
 
 ## Contributing
 
